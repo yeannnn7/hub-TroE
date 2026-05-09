@@ -31,8 +31,8 @@ class TorchModel(nn.Module):
         if y is not None:
             return self.loss(y_pred, y)
         else:
-            return y_pred
-
+            # return y_pred
+            return torch.softmax(y_pred,dim=1) #输出标准的概率分布
 # 生成一个样本, 样本的生成方法，代表了我们要学习的规律
 # 随机生成一个5维向量，机器选择哪一维，就是哪一类
 def build_sample():
@@ -116,7 +116,7 @@ def main():
             # print(x,y)
             loss = model(x, y)  # 计算loss  model.forward(x,y)
             loss.backward()  # 计算梯度
-            optim.step()  # 更新权重
+            optim.step()  # 更新权重 - 优化器
             optim.zero_grad()  # 梯度归零
             watch_loss.append(loss.item())
         print("=========\n第%d轮平均loss:%f" % (epoch + 1, np.mean(watch_loss)))

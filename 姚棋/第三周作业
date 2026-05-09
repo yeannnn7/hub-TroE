@@ -1,0 +1,169 @@
+# %%
+# %%
+import torch
+import torch.nn as nn
+import torch.optim as optim
+from torch.utils.data import Dataset, DataLoader
+import numpy as np
+import random
+
+# -------------------- 数据准备 --------------------
+COMMON_CHARS = [chr(i) for i in range(0x4e00, 0x4e00+100) if chr(i) != '你']
+VOCAB = ['<PAD>'] + list(set(COMMON_CHARS)) + ['你']
+char2idx = {ch: i for i, ch in enumerate(VOCAB)}
+VOCAB_SIZE = len(VOCAB)
+MAX_LEN = 5
+
+def generate_sample():
+    pos = random.randint(0,4)
+    chars = ['你' if i==pos else random.choice(COMMON_CHARS) for i in range(5)]
+    return ''.join(chars), pos+1
+
+class PositionDataset(Dataset):
+    def __init__(self, num_samples):
+        self.samples = [generate_sample() for _ in range(num_samples)]
+    def __len__(self): return len(self.samples)
+    def __getitem__(self, idx):
+        text, label = self.samples[idx]
+        indices = [char2idx.get(ch, 0) for ch in text]   # 0表示<PAD>
+        return torch.tensor(indices), torch.tensor(label-1)
+
+train_ds = PositionDataset(8000)
+test_ds = PositionDataset(2000)
+train_loader = DataLoader(train_ds, batch_size=64, shuffle=True)
+test_loader = DataLoader(test_ds, batch_size=64)
+
+# -------------------- 模型定义（整合所有组件） --------------------
+class RNNWithComponents(nn.Module):
+    def __init__(self, vocab_size, embed_dim, hidden_dim, num_classes, num_layers=2, dropout=0.5):
+        super().__init__()
+        self.embedding = nn.Embedding(vocab_size, embed_dim, padding_idx=0)
+        self.dropout_emb = nn.Dropout(dropout)
+        self.rnn = nn.RNN(embed_dim, hidden_dim, num_layers, batch_first=True, dropout=dropout if num_layers>1 else 0)
+        self.layer_norm = nn.LayerNorm(hidden_dim)   # 归一化
+        self.dropout_rnn = nn.Dropout(dropout)
+        self.fc = nn.Linear(hidden_dim, num_classes)
+    
+    def forward(self, x):
+        emb = self.embedding(x)               # (batch, seq, embed)
+        emb = self.dropout_emb(emb)
+        out, _ = self.rnn(emb)                # (batch, seq, hidden)
+        out = self.layer_norm(out)            # 归一化
+        out = self.dropout_rnn(out)
+        # 池化：取最后一个时间步（等价于最大池化seq维度）
+        last_out = out[:, -1, :]              # (batch, hidden)
+        logits = self.fc(last_out)
+        return logits
+
+class LSTMWithComponents(nn.Module):
+    def __init__(self, vocab_size, embed_dim, hidden_dim, num_classes, num_layers=2, dropout=0.5):
+        super().__init__()
+        self.embedding = nn.Embedding(vocab_size, embed_dim, padding_idx=0)
+        self.dropout_emb = nn.Dropout(dropout)
+        self.lstm = nn.LSTM(embed_dim, hidden_dim, num_layers, batch_first=True, dropout=dropout if num_layers>1 else 0)
+        self.layer_norm = nn.LayerNorm(hidden_dim)
+        self.dropout_lstm = nn.Dropout(dropout)
+        # 使用全局最大池化替代简单取最后一步（体现池化层）
+        self.global_pool = nn.AdaptiveMaxPool1d(1)   # 对序列维度做最大池化
+        self.fc = nn.Linear(hidden_dim, num_classes)
+    
+    def forward(self, x):
+        emb = self.embedding(x)               # (B, S, E)
+        emb = self.dropout_emb(emb)
+        out, _ = self.lstm(emb)               # (B, S, H)
+        out = self.layer_norm(out)
+        out = self.dropout_lstm(out)
+        # 全局最大池化：将序列长度维度压缩为1
+        out = out.transpose(1, 2)             # (B, H, S)
+        pooled = self.global_pool(out)        # (B, H, 1)
+        pooled = pooled.squeeze(-1)           # (B, H)
+        logits = self.fc(pooled)
+        return logits
+
+# 可选：CNN文本分类模型（额外展示CNN+池化+归一化）
+class CNNTextClassifier(nn.Module):
+    def __init__(self, vocab_size, embed_dim, num_filters=100, filter_sizes=[3,4,5], num_classes=5, dropout=0.5):
+        super().__init__()
+        self.embedding = nn.Embedding(vocab_size, embed_dim, padding_idx=0)
+        self.convs = nn.ModuleList([
+            nn.Conv1d(embed_dim, num_filters, k) for k in filter_sizes
+        ])
+        self.dropout = nn.Dropout(dropout)
+        self.fc = nn.Linear(num_filters * len(filter_sizes), num_classes)
+        self.layer_norm = nn.LayerNorm(embed_dim)  # 归一化嵌入
+    
+    def forward(self, x):
+        emb = self.embedding(x)            # (B, S, E)
+        emb = self.layer_norm(emb)         # 归一化
+        emb = emb.transpose(1, 2)          # (B, E, S)
+        conv_outs = []
+        for conv in self.convs:
+            c = torch.relu(conv(emb))      # (B, F, S-k+1)
+            pooled = torch.max(c, dim=2)[0] # 全局最大池化 (B, F)
+            conv_outs.append(pooled)
+        out = torch.cat(conv_outs, dim=1)   # (B, F*len)
+        out = self.dropout(out)
+        logits = self.fc(out)
+        return logits
+
+# -------------------- 训练函数 --------------------
+def train_model(model, train_loader, test_loader, epochs=15, lr=0.001):
+    device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+    model = model.to(device)
+    criterion = nn.CrossEntropyLoss()
+    optimizer = optim.Adam(model.parameters(), lr=lr)   # Adam优化器
+    
+    print(f"\nTraining {model.__class__.__name__} on {device}")
+    for epoch in range(1, epochs+1):
+        model.train()
+        total_loss = 0.0
+        for inputs, labels in train_loader:
+            inputs, labels = inputs.to(device), labels.to(device)
+            optimizer.zero_grad()
+            outputs = model(inputs)
+            loss = criterion(outputs, labels)
+            loss.backward()
+            optimizer.step()
+            total_loss += loss.item() * inputs.size(0)
+        avg_loss = total_loss / len(train_loader.dataset)
+        
+        # 测试
+        model.eval()
+        correct = 0
+        total = 0
+        with torch.no_grad():
+            for inputs, labels in test_loader:
+                inputs, labels = inputs.to(device), labels.to(device)
+                outputs = model(inputs)
+                preds = torch.argmax(outputs, dim=1)
+                correct += (preds == labels).sum().item()
+                total += labels.size(0)
+        acc = correct / total
+        print(f"Epoch {epoch:2d} | Loss: {avg_loss:.4f} | Acc: {acc:.4f}")
+
+# -------------------- 运行实验 --------------------
+EMBED_DIM = 64
+HIDDEN_DIM = 128
+NUM_CLASSES = 5
+
+print("【RNN模型+组件】")
+rnn_model = RNNWithComponents(VOCAB_SIZE, EMBED_DIM, HIDDEN_DIM, NUM_CLASSES, num_layers=2, dropout=0.5)
+train_model(rnn_model, train_loader, test_loader, epochs=10)
+
+print("\n【LSTM模型+组件】")
+lstm_model = LSTMWithComponents(VOCAB_SIZE, EMBED_DIM, HIDDEN_DIM, NUM_CLASSES, num_layers=2, dropout=0.5)
+train_model(lstm_model, train_loader, test_loader, epochs=10)
+
+print("\n【CNN模型（对比）】")
+cnn_model = CNNTextClassifier(VOCAB_SIZE, EMBED_DIM, num_filters=100, filter_sizes=[2,3,4], dropout=0.5)
+train_model(cnn_model, train_loader, test_loader, epochs=10)
+
+# 推理示例
+test_text = "大中国你好"
+indices = [char2idx.get(ch, 0) for ch in test_text]
+input_tensor = torch.tensor([indices])
+lstm_model.eval()
+with torch.no_grad():
+    logit = lstm_model(input_tensor)
+    pred = torch.argmax(logit, dim=1).item() + 1
+print(f"\n预测'{test_text}'中'你'的位置：{pred}")
