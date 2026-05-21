@@ -1,0 +1,310 @@
+import numpy as np
+import torch
+import torch.nn as nn
+import torch.nn.functional as F
+from torch.utils.data import Dataset, DataLoader
+import math
+import random
+import argparse
+
+class MultiHeadAttention(nn.Module):
+    def __init__(self, hidden, nheads):
+        super().__init__()
+        self.d_model = hidden
+        self.nheads = nheads
+        self.head_dim = hidden // nheads
+
+        self.qkv = nn.Linear(hidden, 3 * hidden)
+        self.out = nn.Linear(hidden, hidden)
+
+    def forward(self, x, mask=None):
+        B, T, H = x.shape
+        q, k, v = self.qkv(x).chunk(3, dim=-1)
+
+        q = q.view(B, T, self.nheads, self.head_dim).transpose(1, 2)
+        k = k.view(B, T, self.nheads, self.head_dim).transpose(1, 2)
+        v = v.view(B, T, self.nheads, self.head_dim).transpose(1, 2)
+
+        # Attention mechanism
+        scores = q @ k.transpose(-1, -2) / np.sqrt(self.head_dim)
+
+        # causal mask
+        # mask = torch.tril(torch.ones(T, T))
+        # scores = scores.masked_fill(mask == 0, float('-inf'))
+        if mask is not None:
+            scores = scores.masked_fill(mask == 0, float('-inf'))
+
+        attention = F.softmax(scores, dim=-1)
+
+        # Output
+        out = attention @ v
+        out = out.transpose(1, 2).contiguous().view(B, T, H)
+        out = self.out(out)
+        return out
+    
+class TransformerLayer(nn.Module):
+    def __init__(self, hidden, nheads, d_ffn):
+        super().__init__()
+        self.attention = MultiHeadAttention(hidden, nheads)
+        self.ln1 = nn.LayerNorm(hidden)
+        self.ffn = nn.Sequential(
+            nn.Linear(hidden, d_ffn),
+            nn.GELU(),
+            nn.Linear(d_ffn, hidden)
+        )
+        self.ln2 = nn.LayerNorm(hidden)
+
+    def forward(self, x, mask=None):
+        x = self.ln1(x + self.attention(x, mask))
+        x = self.ln2(x + self.ffn(x))
+        return x
+    
+class TransformerEncoder(nn.Module):
+    def __init__(self, hidden, nheads, d_ffn, nlayers):
+        super().__init__()
+        self.layers = nn.ModuleList([TransformerLayer(hidden, nheads, d_ffn) for _ in range(nlayers)])
+
+    def forward(self, x, mask=None):
+        for layer in self.layers:
+            x = layer(x, mask)
+        return x
+    
+class LLM(nn.Module):
+    """输出vocab中每个字符的概率分布"""
+    def __init__(self, vocab_size, embed_dim, nheads, d_ffn, nlayers):
+        super().__init__()
+        self.embedding = nn.Embedding(vocab_size, embed_dim, padding_idx=0)     # (B, T, embed_dim)
+        self.encoder = TransformerEncoder(embed_dim, nheads, d_ffn, nlayers)    # (B, T, embed_dim)
+        self.fc = nn.Linear(embed_dim, vocab_size)                              # (B, T, vocab_size)
+
+    def forward(self, x, mask=None):
+        """
+        args:
+            @x: (B, seq_len)
+
+            out: (B, seq_len, vocab_size)
+        """
+        e = self.embedding(x)
+        out = self.encoder(e, mask)
+        logits = self.fc(out)
+        return logits
+
+class CharDataSet(Dataset):
+    """
+    将文本转化为id序列
+    """
+    def __init__(self, text, char2idx, seq_len):
+        self.seq_len = seq_len
+        ids = [char2idx[c] for c in text if c in char2idx]
+        self.data = torch.tensor(ids, dtype=torch.long)
+
+    def __len__(self):
+        """
+        通过getitem获取(x, y)的次数
+        """
+        return max(0, len(self.data) - self.seq_len)
+
+    def __getitem__(self, idx):
+        x = self.data[idx : idx + self.seq_len]
+        y = self.data[idx + 1 : idx + self.seq_len + 1]
+        return x, y
+    
+
+def run_epoch(model, loader, criterion, optimizer, train=True):
+    if train:
+        model.train()
+    else:
+        model.eval()
+
+    total_loss = 0.0
+    total_tokens = 0
+
+    for x, y in loader: # x: (B, seq_len), y: (B, seq_len)
+        mask = torch.tril(torch.ones(x.shape[1], x.shape[1]))
+        logits = model(x, mask)
+        """每一个字符预测下一个字符的概率分布"""
+        loss = criterion(logits.view(-1, logits.shape[-1]), y.view(-1))
+
+        if train:
+            optimizer.zero_grad()
+            loss.backward()
+            optimizer.step()
+
+        # 当前batch总损失
+        total_loss += loss.item() * x.numel()
+        # 当前batch总token数
+        total_tokens += x.numel()
+
+    avg_loss = total_loss / total_tokens
+    ppl = math.exp(avg_loss)
+    return avg_loss, ppl
+
+def run_Tcontinue(model, char2idx, idx2char, beam_size:int, temperature:float, top_p:float, pred_len:int=40):
+    print("*" * 52)
+    print(f"    输入文本后将启动续写功能（续写长度{pred_len}字符）")
+    print("     q = 退出        r = 重新输入")
+    print("*" * 52)
+
+    while True:
+        raw = input("提问> ").strip() # 剔除头尾空格
+
+        if len(raw) == 0:
+            continue
+
+        if raw == "q":
+            print("退出")
+            break
+        elif raw == "r":
+            continue
+
+        # 输入字符转化为id序列
+        ids = [char2idx[c] for c in raw if c in char2idx]
+        ids = torch.tensor(ids, dtype=torch.long)   # (seq_len,)
+
+        beams = [(0.0), ids.tolist()]
+        with torch.no_grad():
+            for step in range(pred_len):
+                all_candidates  = []
+                for score, token_list in beams:
+                    input_tensor = torch.tensor(token_list, dtype=torch.long).unsqueeze(0) # (1, seq_len)
+                    # 前向传播
+                    logits = model(input_tensor)     # (1, seq_len, vocab_size)
+                    last_logits = logits[:, -1, :]        # (1, 1, vocab_size)
+                    last_logits = last_logits / temperature
+                    probs = F.softmax(last_logits, dim=-1) # (1, 1, vocab_size)
+                    probs = probs.view(-1)              # (vocab_size,)
+
+                     # top-p (nucleus) 采样: 保留累积概率 >= top_p 的最小集合
+                    sorted_probs, sorted_indices = torch.sort(probs, descending=True)
+                    cumsum_probs = torch.cumsum(sorted_probs, dim=-1)
+                    mask = cumsum_probs <= top_p
+                    # 保留至少一个 token
+                    mask[0] = True
+                    top_p_indices = sorted_indices[mask]
+                    top_p_probs = sorted_probs[mask]
+                    # 重新归一化
+                    top_p_probs = top_p_probs / top_p_probs.sum()
+
+                    # 从 top-p 过滤后的集合中选择 top beam_size 个 token
+                    top_k = min(beam_size, len(top_p_indices))
+                    top_probs, top_idx = torch.topk(top_p_probs, k=top_k)
+                    top_tokens = top_p_indices[top_idx]
+
+                    for i in range(top_k):
+                        token = top_tokens[i].item()
+                        logp = math.log(top_probs[i].item() + 1e-10)
+                        all_candidates.append((score + logp, token_list + [token])) 
+
+                all_candidates.sort(key=lambda x: x[0], reverse=True)
+                beams = all_candidates[:beam_size]
+
+
+        best_tokens = beams[0][1][len(ids):]   # 去掉输入部分
+        generated_text = ''.join([idx2char.get(t, '?') for t in best_tokens])
+        print("\n续写结果：")
+        print(raw + generated_text)
+        print("\n" + "="*52 + "\n")
+
+
+def run_assistant(path):
+    ckpt = torch.load(path)
+    char2idx = ckpt["char2idx"]
+    idx2char = ckpt["idx2char"]
+    args = ckpt["args"]     # dictionary
+
+    model = LLM(len(char2idx), args["embedding_dim"], args["nheads"], args["d_ffn"], args["nlayers"])
+    model.load_state_dict(ckpt["model_state"])
+    model.eval()
+
+    print(f"模型: 词表 {len(char2idx):,} 字")
+    run_Tcontinue(model, char2idx, idx2char, beam_size=3, temperature=0.8, top_p=0.9)
+
+
+def load_corpus(pattern):
+    texts = []
+    with open(pattern, encoding="utf-8", errors="ignore") as f:
+        texts.append(f.read())
+
+    return "".join(texts)
+
+def build_vocab(text):
+    chars = sorted(set(text))
+    char2idx = {c:i for i, c in enumerate(chars)}
+    idx2char = {i:c for c, i in char2idx.items()}
+    return char2idx, idx2char
+
+
+
+
+def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--corpus", default=r"D:\学习计划\BDAI\NLP\week5大语言模型初探\week5 LLM初探\corpus.txt")
+    parser.add_argument("--train_ratio", type=float, default=0.8)
+    parser.add_argument("--seq_len", type=int, default=64)
+    parser.add_argument("--batch_size", type=int, default=128)
+    parser.add_argument("--embedding_dim", type=int, default=768)
+    parser.add_argument("--nheads", type=int, default=12)
+    parser.add_argument("--d_ffn", type=int, default=3072)
+    parser.add_argument("--nlayers", type=int, default=6)
+    parser.add_argument("--lr", type=float, default=1e-4)
+    parser.add_argument("--epochs", type=int, default=10)
+    parser.add_argument("--save", default=r"D:\学习计划\BDAI\NLP\week5大语言模型初探\week5 LLM初探\wk05_zy1.pt")
+    args = parser.parse_args()
+
+
+    # 基于语料建立字典
+    text = load_corpus(args.corpus)
+    if text is None:
+        raise FileNotFoundError("指定路径中未找到语料文件")
+
+    print(f"语料字符数: {len(text):,}")
+    char2idx, idx2char = build_vocab(text)
+    vocab_size = len(char2idx)
+    print(f"词表大小: {vocab_size:,}")
+
+    # 乱序、剔除换行符
+    lines = text.splitlines()  # string list, including '\n'
+    random.shuffle(lines)
+    split = int(len(lines) * args.train_ratio)
+    train_text = "\n".join(lines[:split])
+    eval_text = "\n".join(lines[split:])
+
+    train_ds = CharDataSet(train_text, char2idx, seq_len= args.seq_len)
+    eval_ds = CharDataSet(eval_text, char2idx, seq_len= args.seq_len)
+
+    train_loder = DataLoader(train_ds, batch_size=args.batch_size, shuffle=True)
+    eval_loder = DataLoader(eval_ds, batch_size=args.batch_size, shuffle=False)
+
+    model = LLM(vocab_size=vocab_size, embed_dim=args.embedding_dim, nheads=args.nheads, d_ffn=args.d_ffn, nlayers=args.nlayers)
+    total_params = sum(p.numel() for p in model.parameters())
+    print(f"模型参数量: {total_params:,}")
+
+    criterion = nn.CrossEntropyLoss()       # (B, seq_len, vocab_size), (B, seq_len)
+    optimizer = torch.optim.Adam(model.parameters(), lr=args.lr)
+
+    best_eval_ppl = float("inf")
+    print(f"\n{'Epoch':>6}  {'Train Loss':>10}  {'Train PPL':>10}  {'Eval Loss':>10}  {'Eval PPL':>10}")
+    print("-" * 56)
+    for epoch in range(1, args.epochs + 1):
+        tr_loss, tr_ppl = run_epoch(model, train_loder, criterion, optimizer, train=True)
+        with torch.no_grad():
+            ev_loss, ev_ppl = run_epoch(model, eval_loder, criterion, optimizer, train=False)
+
+        marker = "*" if ev_ppl < best_eval_ppl else ""
+        if best_eval_ppl > ev_ppl:
+            best_eval_ppl = ev_ppl
+            torch.save({
+                "model_state": model.state_dict(),
+                "char2idx": char2idx,
+                "idx2char": idx2char,
+                "args": vars(args)
+            }, args.save)
+
+        print(f"{epoch:>6}  {tr_loss:>10.4f}  {tr_ppl:>10.2f}  {ev_loss:>10.4f}  {ev_ppl:>10.2f}{marker}")
+
+    print(f"\n训练完成。最佳验证 PPL: {best_eval_ppl:.2f}  已保存至 {args.save}")
+    run_assistant(args.save)
+
+
+if __name__ == '__main__':
+    main()
