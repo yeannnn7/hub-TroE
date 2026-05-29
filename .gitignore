@@ -9,3 +9,6 @@
 
 # model
 model.bin
+*.pt
+*.pyc
+__pycache__/
