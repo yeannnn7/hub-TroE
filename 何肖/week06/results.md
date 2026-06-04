@@ -36,7 +36,7 @@
 | `train_sft.py` | LoRA 指令微调（chat 格式 + loss masking） |
 | `evaluate_sft.py` | 加载 `outputs/sft_adapter/` 评估 SFT 效果 |
 
-### 2.3 SFT / LoRA 配置（与老师参考答案一致）
+### 2.3 SFT / LoRA 配置
 
 | 项 | 配置 |
 |----|------|
@@ -47,8 +47,6 @@
 | epoch | 3 |
 | 可训练参数占比 | 约 **0.22%**（~108 万 / 4.95 亿） |
 | Adapter | 课程参考答案 → `outputs/sft_adapter/` |
-
-> **说明**：zero-shot / few-shot 早期实验使用 Qwen2.5 底座；SFT 评估须与 LoRA 训练底座一致，故统一为 **Qwen2-0.5B-Instruct**。修正 base 模型后，SFT 准确率由约 30% 升至 **58%**（此前为底座与 LoRA 不匹配导致）。
 
 ---
 
@@ -116,7 +114,7 @@
 2. **LLM zero-shot**：仅靠 prompt，无任务适配，准确率低、格式不可控。  
 3. **LLM SFT（LoRA）**：用 5K 条指令格式数据微调，以约 **0.22%** 参数达到与 BERT 全量相近的 **58%**，数据效率高。
 
-### 4.2 核心结论（作业用）
+### 4.2 核心结论
 
 - **SFT 显著优于 zero-shot / few-shot**，是本任务下 LLM 路线的正确用法。  
 - **LoRA 参数高效**：5K 数据 + 0.22% 参数 ≈ BERT 53K 全量效果。  
@@ -156,7 +154,7 @@
 
 **一般规律：是的**，在同一模型与任务上，更多高质量标注数据通常带来更高上限与更好泛化。
 
-**本课程对比：**
+**对比：**
 
 - BERT：**53K 全量** → val_acc ≈ 56%～62%  
 - LoRA SFT：**5K（约 9.4%）** → val_acc ≈ **58%**（200 条采样评估）
@@ -177,7 +175,7 @@
 - **绝对提升**：约 **28 个百分点**  
 - **相对提升**：约 93%（30% → 58%）
 
-**符合预期。** 课程与参考答案典型结果为 SFT ≈ 58%，与 BERT 全量（约 57%～62%）同量级。SFT 通过 chat 格式 + 仅在 assistant 类别 token 上计算 loss，使模型学会「只输出标准类别名」，从而同时提高准确率与输出规范性。
+**符合预期。** 运行结果为 SFT ≈ 58%，与 BERT 全量（约 57%～62%）同量级。SFT 通过 chat 格式 + 仅在 assistant 类别 token 上计算 loss，使模型学会「只输出标准类别名」，从而同时提高准确率与输出规范性。
 
 ---
 
@@ -230,44 +228,17 @@ LoRA 配置：r=8，target=q/k/v/o，可训练参数约 **0.22%**（课程表述
 
 **选型**：高可靠、低延迟纯分类 → **BERT**；多任务、少样本、需 prompt 灵活 → **SFT + 约束解码 + fallback**。
 
----
 
-## 六、复现实验命令（附录）
-
-```bash
-conda activate py312
-cd src_llm
-
-# Zero-shot
-python classify_llm.py --num_samples 200 --seed 42
-
-# Few-shot
-python classify_llm.py --few_shot 2 --num_samples 200 --seed 42
-
-# SFT 评估（需 outputs/sft_adapter/ + Qwen2-0.5B 权重）
-python evaluate_sft.py --num_samples 200 --seed 42
-```
-
-BERT 训练（参考，耗时较长）：
-
-```bash
-cd ../src
-python train.py --pool cls --epochs 3 --batch_size 16
-```
-
----
-
-## 七、产出文件索引
+## 六、产出文件索引
 
 | 文件 | 说明 |
 |------|------|
 | `outputs/llm_zero_shot_results.json` | zero-shot 逐条结果 |
 | `outputs/llm_few_shot_2_results.json` | few-shot 逐条结果 |
 | `outputs/llm_sft_results.json` | SFT 逐条结果 |
-| `outputs/sft_adapter/` | LoRA 权重（含老师参考答案） |
+| `outputs/sft_adapter/` | LoRA 权重 |
 | `outputs/train_log_cls.json` | BERT cls 训练日志（参考） |
 | `outputs/train_log_sft.json` | SFT 训练日志（若本机训练） |
 
----
 
-*报告完成日期：2026年5月*
+
