@@ -215,7 +215,9 @@ def evaluate_and_decode(model, dataloader, label2id, id2label, tokenizer, device
             predictions = torch.argmax(logits, dim=-1)
             
             if batch_idx < 5:
-                for i in range(len(batch['tokens'])):
+                # 使用predictions的batch size作为循环范围，避免索引越界
+                batch_size = predictions.size(0)
+                for i in range(batch_size):
                     tokens = batch['tokens'][i]
                     pred_labels = predictions[i].cpu().numpy()
                     

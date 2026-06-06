@@ -1,0 +1,374 @@
+{
+  "configuration": {
+    "data_dir": "D:\\workspace\\hub-TroE\\张福\\week07\\data\\peoples_daily",
+    "output_dir": "D:\\workspace\\hub-TroE\\张福\\week07\\outputs\\llm",
+    "model_name_or_path": "D:\\workspace\\hub-TroE\\张福\\week07\\pretrain_models\\Qwen2___5-0___5B-Instruct",
+    "max_len": 64,
+    "lora_rank": 8,
+    "lora_alpha": 4,
+    "lora_dropout": 0.05,
+    "lora_target_modules": "q_proj,v_proj",
+    "batch_size": 1,
+    "epochs": 1,
+    "lr": 0.0001,
+    "weight_decay": 0.0001,
+    "gradient_accumulation_steps": 4,
+    "logging_steps": 10,
+    "eval_steps": 50,
+    "data_scale": 20,
+    "device": "cpu",
+    "fp16": true
+  },
+  "label_mapping": {
+    "label2id": {
+      "B-LOC": 0,
+      "B-ORG": 1,
+      "B-PER": 2,
+      "I-LOC": 3,
+      "I-ORG": 4,
+      "I-PER": 5,
+      "O": 6
+    },
+    "id2label": {
+      "0": "B-LOC",
+      "1": "B-ORG",
+      "2": "B-PER",
+      "3": "I-LOC",
+      "4": "I-ORG",
+      "5": "I-PER",
+      "6": "O"
+    }
+  },
+  "training_results": [
+    {
+      "loss": 67.7381,
+      "grad_norm": 571.237548828125,
+      "learning_rate": 9.655172413793105e-05,
+      "epoch": 0.038350910834132314,
+      "step": 10
+    },
+    {
+      "loss": 129.1314,
+      "grad_norm": 579.9254150390625,
+      "learning_rate": 9.272030651340997e-05,
+      "epoch": 0.07670182166826463,
+      "step": 20
+    },
+    {
+      "loss": 118.2775,
+      "grad_norm": 394.9651794433594,
+      "learning_rate": 8.888888888888889e-05,
+      "epoch": 0.11505273250239693,
+      "step": 30
+    },
+    {
+      "loss": 107.9796,
+      "grad_norm": 488.3227233886719,
+      "learning_rate": 8.505747126436782e-05,
+      "epoch": 0.15340364333652926,
+      "step": 40
+    },
+    {
+      "loss": 237.3647,
+      "grad_norm": 509.0329284667969,
+      "learning_rate": 8.122605363984674e-05,
+      "epoch": 0.19175455417066156,
+      "step": 50
+    },
+    {
+      "eval_loss": 70.9452133178711,
+      "eval_f1": 0.1853191407328779,
+      "eval_precision": 0.18027894436659278,
+      "eval_recall": 0.24768519489443733,
+      "eval_runtime": 2845.143,
+      "eval_samples_per_second": 0.815,
+      "eval_steps_per_second": 0.815,
+      "epoch": 0.19175455417066156,
+      "step": 50
+    },
+    {
+      "loss": 304.9394,
+      "grad_norm": 246.9230499267578,
+      "learning_rate": 7.739463601532568e-05,
+      "epoch": 0.23010546500479387,
+      "step": 60
+    },
+    {
+      "loss": 350.9829,
+      "grad_norm": 456.61370849609375,
+      "learning_rate": 7.35632183908046e-05,
+      "epoch": 0.2684563758389262,
+      "step": 70
+    },
+    {
+      "loss": 307.4678,
+      "grad_norm": 600.1236572265625,
+      "learning_rate": 6.973180076628352e-05,
+      "epoch": 0.3068072866730585,
+      "step": 80
+    },
+    {
+      "loss": 414.9322,
+      "grad_norm": 1137.065185546875,
+      "learning_rate": 6.590038314176246e-05,
+      "epoch": 0.3451581975071908,
+      "step": 90
+    },
+    {
+      "loss": 449.2367,
+      "grad_norm": 1096.9046630859375,
+      "learning_rate": 6.206896551724138e-05,
+      "epoch": 0.3835091083413231,
+      "step": 100
+    },
+    {
+      "eval_loss": 126.99713897705078,
+      "eval_f1": 0.29329381103849567,
+      "eval_precision": 0.3921732370311068,
+      "eval_recall": 0.3998025537966652,
+      "eval_runtime": 2828.0709,
+      "eval_samples_per_second": 0.82,
+      "eval_steps_per_second": 0.82,
+      "epoch": 0.3835091083413231,
+      "step": 100
+    },
+    {
+      "loss": 593.8481,
+      "grad_norm": 780.7343139648438,
+      "learning_rate": 5.823754789272031e-05,
+      "epoch": 0.4218600191754554,
+      "step": 110
+    },
+    {
+      "loss": 474.9705,
+      "grad_norm": 898.0944213867188,
+      "learning_rate": 5.440613026819924e-05,
+      "epoch": 0.46021093000958774,
+      "step": 120
+    },
+    {
+      "loss": 280.5404,
+      "grad_norm": 800.1624755859375,
+      "learning_rate": 5.057471264367817e-05,
+      "epoch": 0.49856184084372,
+      "step": 130
+    },
+    {
+      "loss": 330.3077,
+      "grad_norm": 572.0841674804688,
+      "learning_rate": 4.674329501915709e-05,
+      "epoch": 0.5369127516778524,
+      "step": 140
+    },
+    {
+      "loss": 262.7304,
+      "grad_norm": 613.3735961914062,
+      "learning_rate": 4.291187739463602e-05,
+      "epoch": 0.5752636625119847,
+      "step": 150
+    },
+    {
+      "eval_loss": 60.87696838378906,
+      "eval_f1": 0.48426115442675455,
+      "eval_precision": 0.4674196436871294,
+      "eval_recall": 0.5386080626071681,
+      "eval_runtime": 2810.9734,
+      "eval_samples_per_second": 0.825,
+      "eval_steps_per_second": 0.825,
+      "epoch": 0.5752636625119847,
+      "step": 150
+    },
+    {
+      "loss": 215.7867,
+      "grad_norm": 1616.075927734375,
+      "learning_rate": 3.908045977011495e-05,
+      "epoch": 0.613614573346117,
+      "step": 160
+    },
+    {
+      "loss": 163.7446,
+      "grad_norm": 385.7421569824219,
+      "learning_rate": 3.5249042145593867e-05,
+      "epoch": 0.6519654841802492,
+      "step": 170
+    },
+    {
+      "loss": 205.4959,
+      "grad_norm": 722.0101318359375,
+      "learning_rate": 3.1417624521072797e-05,
+      "epoch": 0.6903163950143816,
+      "step": 180
+    },
+    {
+      "loss": 146.1334,
+      "grad_norm": 528.2833862304688,
+      "learning_rate": 2.7586206896551727e-05,
+      "epoch": 0.7286673058485139,
+      "step": 190
+    },
+    {
+      "loss": 150.7694,
+      "grad_norm": 493.39306640625,
+      "learning_rate": 2.3754789272030653e-05,
+      "epoch": 0.7670182166826462,
+      "step": 200
+    },
+    {
+      "eval_loss": 33.504112243652344,
+      "eval_f1": 0.5135077127328252,
+      "eval_precision": 0.5013448332217866,
+      "eval_recall": 0.5387848311727084,
+      "eval_runtime": 3095.2133,
+      "eval_samples_per_second": 0.749,
+      "eval_steps_per_second": 0.749,
+      "epoch": 0.7670182166826462,
+      "step": 200
+    },
+    {
+      "loss": 122.3886,
+      "grad_norm": 950.5089111328125,
+      "learning_rate": 1.992337164750958e-05,
+      "epoch": 0.8053691275167785,
+      "step": 210
+    },
+    {
+      "loss": 129.7368,
+      "grad_norm": 386.71337890625,
+      "learning_rate": 1.6091954022988507e-05,
+      "epoch": 0.8437200383509108,
+      "step": 220
+    },
+    {
+      "loss": 121.764,
+      "grad_norm": 314.376708984375,
+      "learning_rate": 1.2260536398467433e-05,
+      "epoch": 0.8820709491850431,
+      "step": 230
+    },
+    {
+      "loss": 93.6105,
+      "grad_norm": 272.0750732421875,
+      "learning_rate": 8.429118773946362e-06,
+      "epoch": 0.9204218600191755,
+      "step": 240
+    },
+    {
+      "loss": 118.0567,
+      "grad_norm": 885.8294067382812,
+      "learning_rate": 4.5977011494252875e-06,
+      "epoch": 0.9587727708533078,
+      "step": 250
+    },
+    {
+      "eval_loss": 25.21626853942871,
+      "eval_f1": 0.5312304342460699,
+      "eval_precision": 0.5765597459569765,
+      "eval_recall": 0.5045870620263747,
+      "eval_runtime": 2962.0673,
+      "eval_samples_per_second": 0.783,
+      "eval_steps_per_second": 0.783,
+      "epoch": 0.9587727708533078,
+      "step": 250
+    },
+    {
+      "loss": 114.7422,
+      "grad_norm": 929.0502319335938,
+      "learning_rate": 7.662835249042146e-07,
+      "epoch": 0.99712368168744,
+      "step": 260
+    },
+    {
+      "train_runtime": 97055.8589,
+      "train_samples_per_second": 0.011,
+      "train_steps_per_second": 0.003,
+      "total_flos": 143564063887104.0,
+      "train_loss": 230.56218927025338,
+      "epoch": 1.0,
+      "step": 261
+    }
+  ],
+  "test_results": {
+    "test_loss": 25.072872161865234,
+    "test_f1": 0.5289190078518409,
+    "test_precision": 0.5711970129311427,
+    "test_recall": 0.5039472748986417,
+    "test_runtime": 6262.2119,
+    "test_samples_per_second": 0.74,
+    "test_steps_per_second": 0.74
+  },
+  "test_decoded_samples": [
+    {
+      "tokens": [
+        "我"
+      ],
+      "predicted_entities": [
+        {
+          "text": "我",
+          "label": "LOC",
+          "start": 0,
+          "end": 1
+        }
+      ],
+      "original_tags": [
+        "O"
+      ]
+    },
+    {
+      "tokens": [
+        "为"
+      ],
+      "predicted_entities": [
+        {
+          "text": "为",
+          "label": "LOC",
+          "start": 0,
+          "end": 1
+        }
+      ],
+      "original_tags": [
+        "O"
+      ]
+    },
+    {
+      "tokens": [
+        "其"
+      ],
+      "predicted_entities": [
+        {
+          "text": "其",
+          "label": "LOC",
+          "start": 0,
+          "end": 1
+        }
+      ],
+      "original_tags": [
+        "O"
+      ]
+    },
+    {
+      "tokens": [
+        "有"
+      ],
+      "predicted_entities": [
+        {
+          "text": "有",
+          "label": "LOC",
+          "start": 0,
+          "end": 1
+        }
+      ],
+      "original_tags": [
+        "O"
+      ]
+    },
+    {
+      "tokens": [
+        "不"
+      ],
+      "predicted_entities": [],
+      "original_tags": [
+        "O"
+      ]
+    }
+  ]
+}

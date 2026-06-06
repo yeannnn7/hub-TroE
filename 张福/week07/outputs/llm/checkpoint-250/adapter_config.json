@@ -27,8 +27,8 @@
   "rank_pattern": {},
   "revision": null,
   "target_modules": [
-    "v_proj",
-    "q_proj"
+    "q_proj",
+    "v_proj"
   ],
   "task_type": "TOKEN_CLS",
   "trainable_token_indices": null,
