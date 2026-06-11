@@ -1,0 +1,375 @@
+"""
+序列标注模型训练 - NER任务
+使用BiLSTM架构进行命名实体识别
+数据格式: CoNLL-2003格式 (token pos chunk ner)
+"""
+
+import torch
+import torch.nn as nn
+from torch.utils.data import Dataset, DataLoader
+import numpy as np
+import pickle
+import os
+from sklearn.metrics import classification_report
+
+# 超参数设置
+EMBEDDING_DIM = 100
+HIDDEN_DIM = 256
+NUM_LAYERS = 2
+DROPOUT = 0.3
+BATCH_SIZE = 8
+LEARNING_RATE = 0.001
+EPOCHS = 50
+DEVICE = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+
+# NER标签列表 (BIO格式)
+TAG_LIST = [
+    'O',           # 非实体
+    'B-PER',       # 人名开始
+    'I-PER',       # 人名中间
+    'B-LOC',       # 地点开始
+    'I-LOC',       # 地点中间
+    'B-ORG',       # 组织开始
+    'I-ORG',       # 组织中间
+    'B-MISC',      # 其他开始
+    'I-MISC'       # 其他中间
+]
+
+
+def load_conll_data(file_path):
+    """加载CoNLL格式数据"""
+    sentences = []
+    sentence = []
+    
+    with open(file_path, 'r', encoding='utf-8') as f:
+        for line in f:
+            line = line.strip()
+            if line == '':
+                if sentence:
+                    sentences.append(sentence)
+                    sentence = []
+            else:
+                parts = line.split()
+                if len(parts) >= 4:
+                    token = parts[0]
+                    ner_tag = parts[3]
+                    sentence.append((token, ner_tag))
+    
+    if sentence:
+        sentences.append(sentence)
+    
+    return sentences
+
+
+class NERDataset(Dataset):
+    """NER数据集"""
+    
+    def __init__(self, sentences, word_to_idx, tag_to_idx):
+        self.sentences = sentences
+        self.word_to_idx = word_to_idx
+        self.tag_to_idx = tag_to_idx
+    
+    def __len__(self):
+        return len(self.sentences)
+    
+    def __getitem__(self, idx):
+        sentence = self.sentences[idx]
+        tokens = [item[0] for item in sentence]
+        tags = [item[1] for item in sentence]
+        
+        token_ids = [self.word_to_idx.get(token.lower(), self.word_to_idx['<unk>']) 
+                     for token in tokens]
+        tag_ids = [self.tag_to_idx.get(tag, self.tag_to_idx['O']) for tag in tags]
+        
+        return {
+            'tokens': tokens,
+            'token_ids': torch.tensor(token_ids, dtype=torch.long),
+            'tag_ids': torch.tensor(tag_ids, dtype=torch.long),
+            'length': len(tokens)
+        }
+
+
+class BiLSTM_NER(nn.Module):
+    """BiLSTM序列标注模型"""
+    
+    def __init__(self, vocab_size, tag_to_idx, embedding_dim, hidden_dim, num_layers, dropout):
+        super().__init__()
+        self.tag_to_idx = tag_to_idx
+        self.tagset_size = len(tag_to_idx)
+        
+        # Embedding层
+        self.word_embeds = nn.Embedding(vocab_size, embedding_dim)
+        
+        # BiLSTM层
+        self.lstm = nn.LSTM(
+            embedding_dim,
+            hidden_dim // 2,
+            num_layers=num_layers,
+            bidirectional=True,
+            dropout=dropout if num_layers > 1 else 0,
+            batch_first=True
+        )
+        
+        # 线性层：将LSTM输出映射到标签空间
+        self.hidden2tag = nn.Linear(hidden_dim, self.tagset_size)
+    
+    def forward(self, sentence, tags=None, mask=None):
+        embeds = self.word_embeds(sentence)
+        lstm_out, _ = self.lstm(embeds)
+        feats = self.hidden2tag(lstm_out)
+        
+        if tags is not None:
+            feats_flat = feats.view(-1, self.tagset_size)
+            tags_flat = tags.view(-1)
+            
+            if mask is not None:
+                mask_flat = mask.view(-1)
+                feats_flat = feats_flat[mask_flat]
+                tags_flat = tags_flat[mask_flat]
+            
+            loss = nn.CrossEntropyLoss()(feats_flat, tags_flat)
+            return loss
+        else:
+            pred_tags = torch.argmax(feats, dim=-1)
+            
+            if mask is not None:
+                results = []
+                pred_tags_cpu = pred_tags.cpu().numpy()
+                lengths = mask.sum(dim=1).cpu().numpy()
+                for i, length in enumerate(lengths):
+                    results.append(pred_tags_cpu[i, :length].tolist())
+                return results
+            else:
+                return pred_tags.cpu().numpy().tolist()
+
+
+def pad_collate_fn(batch):
+    """自定义collate函数"""
+    batch.sort(key=lambda x: x['length'], reverse=True)
+    
+    tokens = [item['tokens'] for item in batch]
+    token_ids = [item['token_ids'] for item in batch]
+    tag_ids = [item['tag_ids'] for item in batch]
+    lengths = [item['length'] for item in batch]
+    
+    max_len = max(lengths)
+    padded_token_ids = torch.zeros(len(batch), max_len, dtype=torch.long)
+    padded_tag_ids = torch.zeros(len(batch), max_len, dtype=torch.long)
+    
+    for i, (tok_ids, t_ids) in enumerate(zip(token_ids, tag_ids)):
+        padded_token_ids[i, :lengths[i]] = tok_ids
+        padded_tag_ids[i, :lengths[i]] = t_ids
+    
+    mask = torch.zeros(len(batch), max_len, dtype=torch.bool)
+    for i, length in enumerate(lengths):
+        mask[i, :length] = True
+    
+    return {
+        'tokens': tokens,
+        'token_ids': padded_token_ids.to(DEVICE),
+        'tag_ids': padded_tag_ids.to(DEVICE),
+        'mask': mask.to(DEVICE),
+        'lengths': lengths
+    }
+
+
+def build_vocab(sentences):
+    """构建词汇表"""
+    word_counts = {}
+    
+    for sentence in sentences:
+        for token, _ in sentence:
+            word = token.lower()
+            word_counts[word] = word_counts.get(word, 0) + 1
+    
+    word_to_idx = {
+        '<pad>': 0,
+        '<unk>': 1
+    }
+    for word in word_counts:
+        word_to_idx[word] = len(word_to_idx)
+    
+    return word_to_idx
+
+
+def train(model, train_loader, optimizer, epoch):
+    """训练一个epoch"""
+    model.train()
+    total_loss = 0
+    batch_count = 0
+    
+    for batch in train_loader:
+        optimizer.zero_grad()
+        loss = model(batch['token_ids'], batch['tag_ids'], batch['mask'])
+        loss.backward()
+        torch.nn.utils.clip_grad_norm_(model.parameters(), max_norm=5.0)
+        optimizer.step()
+        
+        total_loss += loss.item()
+        batch_count += 1
+        
+        if batch_count % 10 == 0:
+            avg_loss = total_loss / batch_count
+            print(f"  Epoch {epoch}, Batch {batch_count}, Loss: {avg_loss:.4f}")
+    
+    return total_loss / batch_count
+
+
+def evaluate(model, data_loader, idx_to_tag):
+    """评估模型"""
+    model.eval()
+    all_true_tags = []
+    all_pred_tags = []
+    
+    with torch.no_grad():
+        for batch in data_loader:
+            pred_tags = model(batch['token_ids'], mask=batch['mask'])
+            
+            for i, length in enumerate(batch['lengths']):
+                true_tags = [idx_to_tag[int(batch['tag_ids'][i, j])] for j in range(length)]
+                pred_tags_i = [idx_to_tag[int(tag)] for tag in pred_tags[i]]
+                
+                all_true_tags.extend(true_tags)
+                all_pred_tags.extend(pred_tags_i)
+    
+    report = classification_report(all_true_tags, all_pred_tags, zero_division=0)
+    print(report)
+    
+    return report
+
+
+def predict(model, sentence, word_to_idx, idx_to_tag):
+    """预测单个句子"""
+    model.eval()
+    
+    tokens = sentence.split()
+    token_ids = [word_to_idx.get(token.lower(), word_to_idx['<unk>']) for token in tokens]
+    input_tensor = torch.tensor([token_ids], dtype=torch.long).to(DEVICE)
+    
+    with torch.no_grad():
+        pred_tags = model(input_tensor)
+    
+    result = []
+    for token, tag_idx in zip(tokens, pred_tags[0]):
+        result.append((token, idx_to_tag[tag_idx]))
+    
+    return result
+
+
+def main():
+    print(f"使用设备: {DEVICE}")
+    
+    # 1. 加载数据
+    print("\n正在加载数据...")
+    data_path = 'conll2003_sample.txt'
+    
+    if not os.path.exists(data_path):
+        print(f"错误：数据文件 {data_path} 不存在！")
+        return
+    
+    sentences = load_conll_data(data_path)
+    print(f"总句子数: {len(sentences)}")
+    
+    # 查看样本数据
+    print("\n样本数据:")
+    for i, sent in enumerate(sentences[:2]):
+        print(f"句子 {i+1}:")
+        for token, tag in sent:
+            print(f"  {token} -> {tag}")
+    
+    # 2. 构建词汇表和标签映射
+    print("\n正在构建词汇表...")
+    word_to_idx = build_vocab(sentences)
+    print(f"词汇表大小: {len(word_to_idx)}")
+    
+    tag_to_idx = {tag: idx for idx, tag in enumerate(TAG_LIST)}
+    idx_to_tag = {idx: tag for tag, idx in tag_to_idx.items()}
+    print(f"标签列表: {TAG_LIST}")
+    
+    # 3. 划分数据集
+    train_size = int(0.8 * len(sentences))
+    train_sentences = sentences[:train_size]
+    test_sentences = sentences[train_size:]
+    
+    print(f"\n训练集: {len(train_sentences)} 句子")
+    print(f"测试集: {len(test_sentences)} 句子")
+    
+    # 4. 创建数据加载器
+    print("\n正在创建数据加载器...")
+    train_dataset = NERDataset(train_sentences, word_to_idx, tag_to_idx)
+    test_dataset = NERDataset(test_sentences, word_to_idx, tag_to_idx)
+    
+    train_loader = DataLoader(train_dataset, batch_size=BATCH_SIZE, collate_fn=pad_collate_fn, shuffle=True)
+    test_loader = DataLoader(test_dataset, batch_size=BATCH_SIZE, collate_fn=pad_collate_fn)
+    
+    # 5. 初始化模型
+    print("\n正在初始化BiLSTM模型...")
+    model = BiLSTM_NER(
+        vocab_size=len(word_to_idx),
+        tag_to_idx=tag_to_idx,
+        embedding_dim=EMBEDDING_DIM,
+        hidden_dim=HIDDEN_DIM,
+        num_layers=NUM_LAYERS,
+        dropout=DROPOUT
+    ).to(DEVICE)
+    
+    print(f"模型参数量: {sum(p.numel() for p in model.parameters()):,}")
+    
+    # 6. 训练设置
+    optimizer = torch.optim.Adam(model.parameters(), lr=LEARNING_RATE)
+    
+    # 7. 开始训练
+    print("\n" + "="*50)
+    print("开始训练...")
+    print("="*50)
+    
+    for epoch in range(1, EPOCHS + 1):
+        print(f"\nEpoch {epoch}/{EPOCHS}")
+        train_loss = train(model, train_loader, optimizer, epoch)
+        print(f"  训练Loss: {train_loss:.4f}")
+        
+        if epoch % 10 == 0:
+            print("\n  测试集评估:")
+            evaluate(model, test_loader, idx_to_tag)
+    
+    # 8. 最终评估
+    print("\n" + "="*50)
+    print("最终测试集评估:")
+    print("="*50)
+    evaluate(model, test_loader, idx_to_tag)
+    
+    # 9. 保存模型
+    torch.save({
+        'model_state_dict': model.state_dict(),
+        'word_to_idx': word_to_idx,
+        'tag_to_idx': tag_to_idx,
+        'idx_to_tag': idx_to_tag
+    }, 'bilstm_ner.pth')
+    
+    with open('vocab.pkl', 'wb') as f:
+        pickle.dump({
+            'word_to_idx': word_to_idx,
+            'tag_to_idx': tag_to_idx,
+            'idx_to_tag': idx_to_tag
+        }, f)
+    
+    print("\n训练完成！")
+    print("模型文件: bilstm_ner.pth")
+    print("词汇表文件: vocab.pkl")
+    
+    # 10. 测试预测
+    print("\n" + "="*50)
+    print("测试预测:")
+    print("="*50)
+    
+    test_sentence = "Peter Blackburn works at the European Commission in Brussels"
+    result = predict(model, test_sentence, word_to_idx, idx_to_tag)
+    
+    print(f"输入句子: {test_sentence}")
+    print("预测结果:")
+    for token, tag in result:
+        print(f"  {token} -> {tag}")
+
+
+if __name__ == '__main__':
+    main()
