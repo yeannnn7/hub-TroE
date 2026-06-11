@@ -1,0 +1,3 @@
+﻿2026-06-04 22:42:51  Monitor started for existing training PID 48420.
+2026-06-04 22:50:51  Training PID 48420 finished or is no longer visible.
+2026-06-04 22:50:51  No checkpoint found after training process ended: C:\Users\SueGuan\Desktop\AI_Development_Learning\week7 序列标注问题\序列标注项目\outputs\checkpoints\best_peoples_daily_crf.pt
