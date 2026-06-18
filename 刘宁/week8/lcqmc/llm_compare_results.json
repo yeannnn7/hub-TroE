@@ -1,0 +1,714 @@
+{
+  "model": "qwen-plus",
+  "n_samples": 100,
+  "metrics": {
+    "accuracy": 0.91,
+    "precision_pos": 0.9,
+    "recall_pos": 0.8181818181818182,
+    "f1_pos": 0.8571428571428572,
+    "n_valid": 100,
+    "n_fail": 0
+  },
+  "results": [
+    {
+      "sentence1": "百果园的面膜有激素吗？",
+      "sentence2": "我的花果园面膜有激素吗",
+      "label": 0,
+      "pred": 0,
+      "raw": "否"
+    },
+    {
+      "sentence1": "帮我制作小说封面的字体",
+      "sentence2": "请问怎么制作小说封面字体的啊？",
+      "label": 0,
+      "pred": 1,
+      "raw": "是"
+    },
+    {
+      "sentence1": "移动流量不够用怎么办？",
+      "sentence2": "流量不够用怎么办？中国移动",
+      "label": 1,
+      "pred": 0,
+      "raw": "否"
+    },
+    {
+      "sentence1": "池的古义和今义",
+      "sentence2": "虽的古义和今义",
+      "label": 0,
+      "pred": 0,
+      "raw": "否"
+    },
+    {
+      "sentence1": "捕鱼达人怎样无限金币？",
+      "sentence2": "捕鱼达人破解版怎么玩？",
+      "label": 0,
+      "pred": 0,
+      "raw": "否"
+    },
+    {
+      "sentence1": "杨幂现在在拍什么戏？",
+      "sentence2": "杨幂现在在做什么？",
+      "label": 0,
+      "pred": 0,
+      "raw": "否"
+    },
+    {
+      "sentence1": "在网上购买彩票安全吗？那个网站好？",
+      "sentence2": "在网上买彩票哪个网站比较安全啊？",
+      "label": 1,
+      "pred": 1,
+      "raw": "是"
+    },
+    {
+      "sentence1": "电脑屏幕上的字体有残影，是怎么回事？",
+      "sentence2": "为什么用手指按电脑屏幕，屏幕上会有拖影？",
+      "label": 0,
+      "pred": 0,
+      "raw": "否"
+    },
+    {
+      "sentence1": "疲劳的反义词是什么！急！",
+      "sentence2": "树叶的形状是什么？急！急！急！",
+      "label": 0,
+      "pred": 0,
+      "raw": "否"
+    },
+    {
+      "sentence1": "世界上最大胆的婚礼在哪里？",
+      "sentence2": "世界上最大胆的婚礼在哪?",
+      "label": 1,
+      "pred": 1,
+      "raw": "是"
+    },
+    {
+      "sentence1": "求一部科幻片",
+      "sentence2": "求一部老的科幻片",
+      "label": 0,
+      "pred": 0,
+      "raw": "否"
+    },
+    {
+      "sentence1": "求类似于兔子压倒窝边草的小说",
+      "sentence2": "求类似兔子压倒窝边草的小说，不要虐的",
+      "label": 1,
+      "pred": 0,
+      "raw": "否"
+    },
+    {
+      "sentence1": "汕头有什么好玩的地方？",
+      "sentence2": "汕头有什么地方好玩的？",
+      "label": 1,
+      "pred": 1,
+      "raw": "是"
+    },
+    {
+      "sentence1": "大唐女将樊梨花一共多少级？",
+      "sentence2": "大唐女将樊梨花正版DVD绍兴哪有卖?",
+      "label": 0,
+      "pred": 0,
+      "raw": "否"
+    },
+    {
+      "sentence1": "谁能推荐我几个好玩的小游戏？",
+      "sentence2": "可以推荐几个不错的小游戏网站吗？",
+      "label": 0,
+      "pred": 0,
+      "raw": "否"
+    },
+    {
+      "sentence1": "您同意后，小二马上为您转接，您不要离开页面，很快的，可以吗",
+      "sentence2": "亲可以么如果您同意小二这边立即为您转接您不要离开的哦",
+      "label": 1,
+      "pred": 1,
+      "raw": "是"
+    },
+    {
+      "sentence1": "形容文章好的成语",
+      "sentence2": "形容文章短的成语",
+      "label": 0,
+      "pred": 0,
+      "raw": "否"
+    },
+    {
+      "sentence1": "点击详情截图给这边就可以的，辛苦您了",
+      "sentence2": "您点击查看详情，截图一下，辛苦您了",
+      "label": 1,
+      "pred": 1,
+      "raw": "是"
+    },
+    {
+      "sentence1": "这样的配置能玩现在的大型游戏吗?",
+      "sentence2": "我这配置能玩现在的主流大型3D游戏吗",
+      "label": 1,
+      "pred": 1,
+      "raw": "是"
+    },
+    {
+      "sentence1": "火影中最强的人是谁？",
+      "sentence2": "火影里体术最强的人是谁",
+      "label": 0,
+      "pred": 0,
+      "raw": "否"
+    },
+    {
+      "sentence1": "做什么虚拟软件比较好？",
+      "sentence2": "做虚拟网店什么软件好",
+      "label": 0,
+      "pred": 0,
+      "raw": "否"
+    },
+    {
+      "sentence1": "谁能告诉我这是什么字体？急需，谢谢",
+      "sentence2": "问下这是什么字体？谁知道告诉一下，谢谢。",
+      "label": 1,
+      "pred": 1,
+      "raw": "是"
+    },
+    {
+      "sentence1": "饭前吃的胃药饭后吃还有用吗",
+      "sentence2": "胃药是饭前吃还是饭后吃？",
+      "label": 0,
+      "pred": 0,
+      "raw": "否"
+    },
+    {
+      "sentence1": "腾云驾雾什么意思",
+      "sentence2": "腾云驾雾的驾是什么意思",
+      "label": 0,
+      "pred": 0,
+      "raw": "否"
+    },
+    {
+      "sentence1": "我不喜欢我男朋友了",
+      "sentence2": "我喜欢喝男朋友的尿",
+      "label": 0,
+      "pred": 0,
+      "raw": "否"
+    },
+    {
+      "sentence1": "微信的朋友圈怎么发语言信息不用加照片？",
+      "sentence2": "微信收藏的语音怎么可以发出去啊？",
+      "label": 0,
+      "pred": 0,
+      "raw": "否"
+    },
+    {
+      "sentence1": "南昌市东湖区阳明路外地车",
+      "sentence2": "南昌市阳明路改造公交车可以通行吗",
+      "label": 0,
+      "pred": 0,
+      "raw": "否"
+    },
+    {
+      "sentence1": "有什么中国特色的礼品可以送给泰国的小朋友?",
+      "sentence2": "送给日本朋友什么礼品好？有中国特色的？",
+      "label": 0,
+      "pred": 0,
+      "raw": "否"
+    },
+    {
+      "sentence1": "休闲鞋和运动鞋有什么区别？",
+      "sentence2": "运动鞋与休闲鞋有什么区别",
+      "label": 1,
+      "pred": 1,
+      "raw": "是"
+    },
+    {
+      "sentence1": "破产姐妹第二季怎么停更了",
+      "sentence2": "破产姐妹第二季怎么样",
+      "label": 0,
+      "pred": 0,
+      "raw": "否"
+    },
+    {
+      "sentence1": "现在这个社会学什么技术比较好？",
+      "sentence2": "现在这种社会学什么技术好呢？",
+      "label": 1,
+      "pred": 1,
+      "raw": "是"
+    },
+    {
+      "sentence1": "我的世界手机版地狱门怎么做？",
+      "sentence2": "我的世界手机板怎么去地狱",
+      "label": 0,
+      "pred": 1,
+      "raw": "是"
+    },
+    {
+      "sentence1": "为什么我在贴吧里不能上传图片了",
+      "sentence2": "我为什么在贴吧里不能发帖子了？",
+      "label": 0,
+      "pred": 0,
+      "raw": "否"
+    },
+    {
+      "sentence1": "看图猜成语，这是什么呢？",
+      "sentence2": "这个看图猜成语是什么？",
+      "label": 1,
+      "pred": 1,
+      "raw": "是"
+    },
+    {
+      "sentence1": "微不足道的意思是什么",
+      "sentence2": "微不足道的道昰什么意思",
+      "label": 0,
+      "pred": 0,
+      "raw": "否"
+    },
+    {
+      "sentence1": "怎么查询企业注册信息",
+      "sentence2": "如何查询企业注册信息",
+      "label": 1,
+      "pred": 1,
+      "raw": "是"
+    },
+    {
+      "sentence1": "狗腰子怎么做才好吃",
+      "sentence2": "羊腰子怎么做好吃",
+      "label": 0,
+      "pred": 0,
+      "raw": "否"
+    },
+    {
+      "sentence1": "武媚娘传奇中武媚娘和李世民洗澡是在哪一集",
+      "sentence2": "武媚娘传奇中与李世民一起洗澡的是那一集",
+      "label": 1,
+      "pred": 1,
+      "raw": "是"
+    },
+    {
+      "sentence1": "最近有什么好看的电影？不要恐怖片",
+      "sentence2": "有哪些好看的电影？不看恐怖片",
+      "label": 1,
+      "pred": 1,
+      "raw": "是"
+    },
+    {
+      "sentence1": "怎么防止黑色衣服掉色？",
+      "sentence2": "黑色衣服掉色怎么染色",
+      "label": 0,
+      "pred": 0,
+      "raw": "否"
+    },
+    {
+      "sentence1": "看图猜电视剧名，四个字的",
+      "sentence2": "看图猜电视剧名，四个字",
+      "label": 1,
+      "pred": 1,
+      "raw": "是"
+    },
+    {
+      "sentence1": "五维空间是什么呀？",
+      "sentence2": "七维空间是什么？",
+      "label": 0,
+      "pred": 0,
+      "raw": "否"
+    },
+    {
+      "sentence1": "迷茫是什么意思？",
+      "sentence2": "不在迷茫是什么意思",
+      "label": 0,
+      "pred": 0,
+      "raw": "否"
+    },
+    {
+      "sentence1": "世界上流经国家最多的河流是",
+      "sentence2": "世界上最大的群岛是()。",
+      "label": 0,
+      "pred": 0,
+      "raw": "否"
+    },
+    {
+      "sentence1": "突然感到头晕恶心是怎么回事",
+      "sentence2": "偶热突然头晕恶心是怎么回事",
+      "label": 1,
+      "pred": 1,
+      "raw": "是"
+    },
+    {
+      "sentence1": "为什么淘宝现在不发货？",
+      "sentence2": "淘宝卖家一直不发货会怎么样？",
+      "label": 0,
+      "pred": 0,
+      "raw": "否"
+    },
+    {
+      "sentence1": "联想手机好还是华为手机好？",
+      "sentence2": "移动，联通和电信哪个宽带好？",
+      "label": 0,
+      "pred": 0,
+      "raw": "否"
+    },
+    {
+      "sentence1": "大红色短款羽绒服搭配",
+      "sentence2": "枚红色短款羽绒服搭配",
+      "label": 0,
+      "pred": 0,
+      "raw": "否"
+    },
+    {
+      "sentence1": "现在用什么打电话话费最便宜？",
+      "sentence2": "现在用什么卡打电话最便宜？",
+      "label": 1,
+      "pred": 0,
+      "raw": "否"
+    },
+    {
+      "sentence1": "会计电算化需不需要下载软件？",
+      "sentence2": "会计电算化软件在哪下载？",
+      "label": 0,
+      "pred": 0,
+      "raw": "否"
+    },
+    {
+      "sentence1": "本拉登不打的国家是那个？",
+      "sentence2": "本拉登是那个国家的？",
+      "label": 0,
+      "pred": 0,
+      "raw": "否"
+    },
+    {
+      "sentence1": "怎么把名字翻译成韩文啊",
+      "sentence2": "把我的名字翻译成韩文网",
+      "label": 1,
+      "pred": 0,
+      "raw": "否"
+    },
+    {
+      "sentence1": "男朋友生日送什么有创意的礼物比较好？",
+      "sentence2": "男朋友过生送什么礼物好呢？要有创意的",
+      "label": 1,
+      "pred": 1,
+      "raw": "是"
+    },
+    {
+      "sentence1": "女朋友为什么不让我抱",
+      "sentence2": "为什么女朋友不让做",
+      "label": 0,
+      "pred": 0,
+      "raw": "否"
+    },
+    {
+      "sentence1": "精子是什么样子",
+      "sentence2": "狗的精子是什么样子的",
+      "label": 0,
+      "pred": 0,
+      "raw": "否"
+    },
+    {
+      "sentence1": "男属鼠和女属虎相配吗",
+      "sentence2": "男属虎和女属牛的相配吗？",
+      "label": 0,
+      "pred": 0,
+      "raw": "否"
+    },
+    {
+      "sentence1": "配电箱系统图三根斜短线是什么意思",
+      "sentence2": "请问配电箱系统图中的LC—16是什么意思",
+      "label": 0,
+      "pred": 0,
+      "raw": "否"
+    },
+    {
+      "sentence1": "不识庐山真面目的下一句是什么",
+      "sentence2": "不识庐山真面目下一句是什么",
+      "label": 1,
+      "pred": 1,
+      "raw": "是"
+    },
+    {
+      "sentence1": "怎么去除脸上的小黑点",
+      "sentence2": "脸上的黑斑小黑点怎么去掉",
+      "label": 1,
+      "pred": 1,
+      "raw": "是"
+    },
+    {
+      "sentence1": "不知道是什么意思。",
+      "sentence2": "鬼知道是什么意思",
+      "label": 0,
+      "pred": 0,
+      "raw": "否"
+    },
+    {
+      "sentence1": "这样的女人值得我去爱吗？",
+      "sentence2": "这个女人值得我爱吗？放不下啊！",
+      "label": 1,
+      "pred": 0,
+      "raw": "否"
+    },
+    {
+      "sentence1": "请问北京和北京市的区别？",
+      "sentence2": "请问北京市的高招办在哪？",
+      "label": 0,
+      "pred": 0,
+      "raw": "否"
+    },
+    {
+      "sentence1": "小兔子图片怎么画",
+      "sentence2": "小兔子鞋怎么叠图片",
+      "label": 0,
+      "pred": 0,
+      "raw": "否"
+    },
+    {
+      "sentence1": "七寸平板电脑皮套多少钱",
+      "sentence2": "10寸平板电脑皮套及膜一般要多少钱",
+      "label": 0,
+      "pred": 0,
+      "raw": "否"
+    },
+    {
+      "sentence1": "活螃蟹是什么颜色",
+      "sentence2": "螃蟹什么颜色",
+      "label": 0,
+      "pred": 1,
+      "raw": "是"
+    },
+    {
+      "sentence1": "怎么样提高自己的人气？",
+      "sentence2": "怎样提高自己贴吧人气。",
+      "label": 0,
+      "pred": 0,
+      "raw": "否"
+    },
+    {
+      "sentence1": "玩英雄联盟用什么免费网游加速器好啊？",
+      "sentence2": "玩英雄联盟有什么免费网游加速器好",
+      "label": 1,
+      "pred": 1,
+      "raw": "是"
+    },
+    {
+      "sentence1": "天天动听和酷狗哪个好？",
+      "sentence2": "酷狗和天天动听那个好",
+      "label": 1,
+      "pred": 1,
+      "raw": "是"
+    },
+    {
+      "sentence1": "这个男人什么意思？",
+      "sentence2": "男人说吹是什么意思？",
+      "label": 0,
+      "pred": 0,
+      "raw": "否"
+    },
+    {
+      "sentence1": "淘宝会员怎么不升级啊",
+      "sentence2": "怎么升级淘宝会员",
+      "label": 0,
+      "pred": 0,
+      "raw": "否"
+    },
+    {
+      "sentence1": "谁知道这个韩国女模特MM叫什么名字啊？",
+      "sentence2": "有谁知道这个韩国女模特叫什么名字？",
+      "label": 1,
+      "pred": 1,
+      "raw": "是"
+    },
+    {
+      "sentence1": "一年四季，你最喜欢哪个季节，为什么",
+      "sentence2": "你最喜欢哪个季节的树林为什么",
+      "label": 0,
+      "pred": 0,
+      "raw": "否"
+    },
+    {
+      "sentence1": "付款的时候选择余额宝付款即可",
+      "sentence2": "那您付款的时候可以选择余额宝支付的",
+      "label": 1,
+      "pred": 1,
+      "raw": "是"
+    },
+    {
+      "sentence1": "苏州哪里有好吃的火锅店？",
+      "sentence2": "那里有好吃的冰淇淋火锅？",
+      "label": 0,
+      "pred": 0,
+      "raw": "否"
+    },
+    {
+      "sentence1": "芦荟怎样做面膜",
+      "sentence2": "芦荟面膜怎么样",
+      "label": 0,
+      "pred": 0,
+      "raw": "否"
+    },
+    {
+      "sentence1": "冬天用什么护肤品好？",
+      "sentence2": "冬天用什么护肤品比较好？",
+      "label": 1,
+      "pred": 1,
+      "raw": "是"
+    },
+    {
+      "sentence1": "什么牌子的奶茶好喝呢？",
+      "sentence2": "什么牌子的速溶奶茶好喝",
+      "label": 0,
+      "pred": 0,
+      "raw": "否"
+    },
+    {
+      "sentence1": "请认真和我恋爱游戏有h吗",
+      "sentence2": "请认真和我恋爱游戏里有上杉练么",
+      "label": 0,
+      "pred": 0,
+      "raw": "否"
+    },
+    {
+      "sentence1": "为什么男人喜欢搂着女人睡觉",
+      "sentence2": "女人为什么喜欢搂着男人睡觉？",
+      "label": 0,
+      "pred": 0,
+      "raw": "否"
+    },
+    {
+      "sentence1": "微信怎么抢流量",
+      "sentence2": "微信流量怎么来的",
+      "label": 0,
+      "pred": 0,
+      "raw": "否"
+    },
+    {
+      "sentence1": "改马甲是什么意思？",
+      "sentence2": "我是马甲是什么意思啊",
+      "label": 0,
+      "pred": 0,
+      "raw": "否"
+    },
+    {
+      "sentence1": "幽的第二笔是什么",
+      "sentence2": "匪的第二笔是什么？",
+      "label": 0,
+      "pred": 0,
+      "raw": "否"
+    },
+    {
+      "sentence1": "蓝牙4.0适配器能同时让几个蓝牙耳机听声音？",
+      "sentence2": "怎么能让蓝牙耳机听到看影片的声音？",
+      "label": 0,
+      "pred": 0,
+      "raw": "否"
+    },
+    {
+      "sentence1": "银行卡绑定迅雷看看怎么取消自动续费？",
+      "sentence2": "请问迅雷手机包月会员怎么取消自动续费",
+      "label": 0,
+      "pred": 0,
+      "raw": "否"
+    },
+    {
+      "sentence1": "今天男篮中国vs美国几点放？哪几个台放？",
+      "sentence2": "中国好声音第二季第一期今晚会播出吗？",
+      "label": 0,
+      "pred": 0,
+      "raw": "否"
+    },
+    {
+      "sentence1": "熊出没之过年的插曲是什么？",
+      "sentence2": "熊出没之过年的插曲叫什么",
+      "label": 1,
+      "pred": 1,
+      "raw": "是"
+    },
+    {
+      "sentence1": "这个图什么意思？内涵图…",
+      "sentence2": "内涵图，这图是什么意思？内涵",
+      "label": 1,
+      "pred": 1,
+      "raw": "是"
+    },
+    {
+      "sentence1": "为什么日本男人喜欢穿女人衣服？",
+      "sentence2": "日本男人在家里一般穿什么样的和服",
+      "label": 0,
+      "pred": 0,
+      "raw": "否"
+    },
+    {
+      "sentence1": "初三上册物理复习提纲",
+      "sentence2": "初三上半学期物理复习提纲",
+      "label": 1,
+      "pred": 1,
+      "raw": "是"
+    },
+    {
+      "sentence1": "有找工作的厨师吗",
+      "sentence2": "厨师找工作难吗",
+      "label": 0,
+      "pred": 0,
+      "raw": "否"
+    },
+    {
+      "sentence1": "十二生肖哪个动物的肉是酸的",
+      "sentence2": "十二生肖的动物是那个",
+      "label": 0,
+      "pred": 0,
+      "raw": "否"
+    },
+    {
+      "sentence1": "小圆脸大眼睛适合什么样的刘海",
+      "sentence2": "圆脸适合什么发型(除短发)",
+      "label": 0,
+      "pred": 0,
+      "raw": "否"
+    },
+    {
+      "sentence1": "蜷缩的蜷是什么意思",
+      "sentence2": "蜷缩是什么意思？",
+      "label": 0,
+      "pred": 0,
+      "raw": "否"
+    },
+    {
+      "sentence1": "径组词拜托了。",
+      "sentence2": "瓷，组词，拜托",
+      "label": 0,
+      "pred": 0,
+      "raw": "否"
+    },
+    {
+      "sentence1": "河北商贸学校附近住宿",
+      "sentence2": "河北省商贸学校附近的旅馆",
+      "label": 1,
+      "pred": 0,
+      "raw": "否"
+    },
+    {
+      "sentence1": "马克斯·韦伯《新教伦理与资本主义精神》英文版",
+      "sentence2": "《新教伦理与资本主义精神》",
+      "label": 0,
+      "pred": 0,
+      "raw": "否"
+    },
+    {
+      "sentence1": "王源喜欢吃什么？",
+      "sentence2": "王源不喜欢吃什么",
+      "label": 0,
+      "pred": 0,
+      "raw": "否"
+    },
+    {
+      "sentence1": "黑米A5手机好吗？移动营业厅卖799元",
+      "sentence2": "我买黑米手机a5价格是899是不是买贵了",
+      "label": 0,
+      "pred": 0,
+      "raw": "否"
+    },
+    {
+      "sentence1": "跪求一部外星人入侵的电影",
+      "sentence2": "问一部外星人入侵地球的电影",
+      "label": 1,
+      "pred": 1,
+      "raw": "是"
+    },
+    {
+      "sentence1": "生死狙击游戏盒怎么下",
+      "sentence2": "生死狙击游戏怎么卡",
+      "label": 0,
+      "pred": 0,
+      "raw": "否"
+    }
+  ]
+}
