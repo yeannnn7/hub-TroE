@@ -1,0 +1,188 @@
+[
+  {
+    "accuracy": 0.5,
+    "f1_weighted": 0.33333333333333326,
+    "f1_positive": 0.6666666666666666,
+    "precision_positive": 0.5,
+    "recall_positive": 1.0,
+    "method": "majority",
+    "threshold": null,
+    "dataset": "lcqmc",
+    "eval_split": "test",
+    "train_stats": {
+      "n": 238766,
+      "positive": 138574,
+      "negative": 100192,
+      "positive_ratio": 0.5803757653937328
+    },
+    "eval_stats": {
+      "n": 12500,
+      "positive": 6250,
+      "negative": 6250,
+      "positive_ratio": 0.5
+    }
+  },
+  {
+    "accuracy": 0.55496,
+    "f1_weighted": 0.5159874352948373,
+    "f1_positive": 0.6533308406555742,
+    "precision_positive": 0.5350617535980402,
+    "recall_positive": 0.83872,
+    "method": "length_similarity",
+    "threshold": 0.2516814159292035,
+    "dataset": "lcqmc",
+    "eval_split": "test",
+    "train_stats": {
+      "n": 238766,
+      "positive": 138574,
+      "negative": 100192,
+      "positive_ratio": 0.5803757653937328
+    },
+    "eval_stats": {
+      "n": 12500,
+      "positive": 6250,
+      "negative": 6250,
+      "positive_ratio": 0.5
+    }
+  },
+  {
+    "accuracy": 0.69552,
+    "f1_weighted": 0.6877000410063139,
+    "f1_positive": 0.7371183865174747,
+    "precision_positive": 0.6485172581429266,
+    "recall_positive": 0.85376,
+    "method": "char_jaccard",
+    "threshold": 0.58,
+    "dataset": "lcqmc",
+    "eval_split": "test",
+    "train_stats": {
+      "n": 238766,
+      "positive": 138574,
+      "negative": 100192,
+      "positive_ratio": 0.5803757653937328
+    },
+    "eval_stats": {
+      "n": 12500,
+      "positive": 6250,
+      "negative": 6250,
+      "positive_ratio": 0.5
+    }
+  },
+  {
+    "accuracy": 0.6324,
+    "f1_weighted": 0.6179992971652618,
+    "f1_positive": 0.6921685536276546,
+    "precision_positive": 0.595367062348738,
+    "recall_positive": 0.82656,
+    "method": "tfidf_cosine",
+    "threshold": 0.5100000000000002,
+    "vocab_size": 50000,
+    "dataset": "lcqmc",
+    "eval_split": "test",
+    "train_stats": {
+      "n": 238766,
+      "positive": 138574,
+      "negative": 100192,
+      "positive_ratio": 0.5803757653937328
+    },
+    "eval_stats": {
+      "n": 12500,
+      "positive": 6250,
+      "negative": 6250,
+      "positive_ratio": 0.5
+    }
+  },
+  {
+    "accuracy": 0.4916473317865429,
+    "f1_weighted": 0.32409416582849104,
+    "f1_positive": 0.0,
+    "precision_positive": 0.0,
+    "recall_positive": 0.0,
+    "method": "majority",
+    "threshold": null,
+    "dataset": "bq_corpus",
+    "eval_split": "test",
+    "train_stats": {
+      "n": 68960,
+      "positive": 34438,
+      "negative": 34522,
+      "positive_ratio": 0.4993909512761021
+    },
+    "eval_stats": {
+      "n": 8620,
+      "positive": 4382,
+      "negative": 4238,
+      "positive_ratio": 0.508352668213457
+    }
+  },
+  {
+    "accuracy": 0.5614849187935035,
+    "f1_weighted": 0.5603480204014024,
+    "f1_positive": 0.5862521891418564,
+    "precision_positive": 0.563315103071098,
+    "recall_positive": 0.6111364673664993,
+    "method": "length_similarity",
+    "threshold": 0.17001601667277744,
+    "dataset": "bq_corpus",
+    "eval_split": "test",
+    "train_stats": {
+      "n": 68960,
+      "positive": 34438,
+      "negative": 34522,
+      "positive_ratio": 0.4993909512761021
+    },
+    "eval_stats": {
+      "n": 8620,
+      "positive": 4382,
+      "negative": 4238,
+      "positive_ratio": 0.508352668213457
+    }
+  },
+  {
+    "accuracy": 0.6908352668213457,
+    "f1_weighted": 0.6908392580236163,
+    "f1_positive": 0.6956720338015302,
+    "precision_positive": 0.6962285714285714,
+    "recall_positive": 0.6951163852122318,
+    "method": "char_jaccard",
+    "threshold": 0.195,
+    "dataset": "bq_corpus",
+    "eval_split": "test",
+    "train_stats": {
+      "n": 68960,
+      "positive": 34438,
+      "negative": 34522,
+      "positive_ratio": 0.4993909512761021
+    },
+    "eval_stats": {
+      "n": 8620,
+      "positive": 4382,
+      "negative": 4238,
+      "positive_ratio": 0.508352668213457
+    }
+  },
+  {
+    "accuracy": 0.6707656612529003,
+    "f1_weighted": 0.67035093169319,
+    "f1_positive": 0.6848767488341105,
+    "precision_positive": 0.666955017301038,
+    "recall_positive": 0.7037882245549977,
+    "method": "tfidf_cosine",
+    "threshold": 0.07,
+    "vocab_size": 50000,
+    "dataset": "bq_corpus",
+    "eval_split": "test",
+    "train_stats": {
+      "n": 68960,
+      "positive": 34438,
+      "negative": 34522,
+      "positive_ratio": 0.4993909512761021
+    },
+    "eval_stats": {
+      "n": 8620,
+      "positive": 4382,
+      "negative": 4238,
+      "positive_ratio": 0.508352668213457
+    }
+  }
+]
