@@ -1,0 +1,65 @@
+===== compare_methods =====
+Be aware, overflowing tokens are not returned for the setting you have chosen, i.e. sequence pairs with the 'longest_first' truncation strategy. So the returned list will always be empty even if some tokens have been removed.
+Be aware, overflowing tokens are not returned for the setting you have chosen, i.e. sequence pairs with the 'longest_first' truncation strategy. So the returned list will always be empty even if some tokens have been removed.
+设备: cpu  评估集: validation
+数据集: bq_corpus, lcqmc
+
+######################################################################
+# 评估数据集: bq_corpus
+
+  加载 biencoder_cosine ...
+模型: BiEncoder (pool=mean, layers=4)
+参数量: 45.6M  (BERT 骨干: 45.6M)
+
+  加载 biencoder_triplet ...
+模型: BiEncoder (pool=mean, layers=4)
+参数量: 45.6M  (BERT 骨干: 45.6M)
+
+  加载 crossencoder ...
+模型: CrossEncoder (layers=4)
+参数量: 45.6M  (BERT 骨干: 45.6M)
+
+======================================================================
+数据集: bq_corpus
+方法                      Accuracy        F1       AUC/备注
+----------------------------------------------------------------------
+  biencoder_cosine        0.7704    0.7701    auc=0.844
+  biencoder_triplet       0.7589    0.7584    auc=0.830
+  crossencoder            0.7821    0.7821       argmax
+  → 最优: crossencoder  (F1=0.7821)
+  图表已保存 → /Users/xubin/Documents/www/py/hub-TroE/徐斌/week08/outputs/figures/method_comparison_bq_corpus.png
+
+######################################################################
+# 评估数据集: lcqmc
+
+  加载 biencoder_cosine ...
+模型: BiEncoder (pool=mean, layers=4)
+参数量: 45.6M  (BERT 骨干: 45.6M)
+
+  加载 biencoder_triplet ...
+模型: BiEncoder (pool=mean, layers=4)
+参数量: 45.6M  (BERT 骨干: 45.6M)
+
+  加载 crossencoder ...
+模型: CrossEncoder (layers=4)
+参数量: 45.6M  (BERT 骨干: 45.6M)
+
+======================================================================
+数据集: lcqmc
+方法                      Accuracy        F1       AUC/备注
+----------------------------------------------------------------------
+  biencoder_cosine        0.7210    0.7201    auc=0.801
+  biencoder_triplet       0.7019    0.7012    auc=0.782
+  crossencoder            0.7688    0.7676       argmax
+  → 最优: crossencoder  (F1=0.7676)
+  图表已保存 → /Users/xubin/Documents/www/py/hub-TroE/徐斌/week08/outputs/figures/method_comparison_lcqmc.png
+
+================================================================================
+数据集           BiEncoder(Cosine) BiEncoder(Triplet)   CrossEncoder
+                   F1      Acc        F1      Acc      F1    Acc
+--------------------------------------------------------------------------------
+  bq_corpus    0.7701   0.7704    0.7584   0.7589    0.7821   0.7821
+  lcqmc        0.7201   0.7210    0.7012   0.7019    0.7676   0.7688
+
+对比日志 → /Users/xubin/Documents/www/py/hub-TroE/徐斌/week08/outputs/logs/dataset_method_comparison.json
+  图表已保存 → /Users/xubin/Documents/www/py/hub-TroE/徐斌/week08/outputs/figures/dataset_method_comparison.png

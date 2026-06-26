@@ -1,0 +1,64 @@
+[
+  {
+    "accuracy": 0.7704176334106728,
+    "f1": 0.7700609545131057,
+    "threshold": 0.65,
+    "auc": 0.8440898098320612,
+    "label": "BiEncoder (Cosine)",
+    "color": "#2196F3",
+    "key": "biencoder_cosine",
+    "type": "biencoder",
+    "dataset": "bq_corpus"
+  },
+  {
+    "accuracy": 0.7589327146171694,
+    "f1": 0.7583628383279335,
+    "threshold": 0.61,
+    "auc": 0.8303347177735432,
+    "label": "BiEncoder (Triplet)",
+    "color": "#4CAF50",
+    "key": "biencoder_triplet",
+    "type": "biencoder",
+    "dataset": "bq_corpus"
+  },
+  {
+    "accuracy": 0.7821345707656613,
+    "f1": 0.7821247181741753,
+    "label": "CrossEncoder",
+    "color": "#FF9800",
+    "key": "crossencoder",
+    "type": "crossencoder",
+    "dataset": "bq_corpus"
+  },
+  {
+    "accuracy": 0.7209725062485799,
+    "f1": 0.720058298762688,
+    "threshold": 0.88,
+    "auc": 0.801177176696543,
+    "label": "BiEncoder (Cosine)",
+    "color": "#2196F3",
+    "key": "biencoder_cosine",
+    "type": "biencoder",
+    "dataset": "lcqmc"
+  },
+  {
+    "accuracy": 0.7018859350147694,
+    "f1": 0.7012471850008427,
+    "threshold": 0.91,
+    "auc": 0.7816507992234935,
+    "label": "BiEncoder (Triplet)",
+    "color": "#4CAF50",
+    "key": "biencoder_triplet",
+    "type": "biencoder",
+    "dataset": "lcqmc"
+  },
+  {
+    "accuracy": 0.7688025448761645,
+    "f1": 0.7675659906775714,
+    "label": "CrossEncoder",
+    "color": "#FF9800",
+    "key": "crossencoder",
+    "type": "crossencoder",
+    "dataset": "lcqmc"
+  }
+]
