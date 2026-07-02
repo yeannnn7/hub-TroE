@@ -1,0 +1,163 @@
+# vLLM 部署与性能测试实验报告
+
+## 一、实验信息
+
+- **姓名**：张伟
+- **日期**：2026年7月2日  
+- **实验环境**：WSL 2 + Ubuntu + CUDA 12.4  
+
+---
+
+## 二、实验目的
+
+1. 掌握 vLLM 框架的部署方法  
+2. 对比 vLLM 与 Transformers 的推理性能  
+3. 理解连续批处理对 LLM 推理效率的提升  
+
+---
+
+## 三、实验环境
+
+### 3.1 硬件配置
+
+- GPU：NVIDIA GeForce RTX 4090 (16GB)  
+- CPU：Intel Core i7/i9 (WSL 2)  
+- 内存：32GB  
+
+### 3.2 软件版本
+
+| 组件 | 版本 |
+|------|------|
+| 操作系统 | WSL 2 + Ubuntu 22.04 |
+| CUDA | 12.4 |
+| PyTorch | 2.x (CUDA 12.4) |
+| vLLM | 0.24.0 |
+| Transformers | 4.x |
+| Python | 3.10 |
+
+---
+
+## 四、实验步骤
+
+### 4.1 环境搭建
+
+1. 安装 WSL 2 + Ubuntu  
+2. 安装 CUDA Toolkit 12.4  
+3. 创建 Conda 环境：`conda create -n vllm-env python=3.10`  
+4. 安装依赖：`pip install vllm torch transformers`  
+
+### 4.2 模型部署
+
+```bash
+python -m vllm.entrypoints.openai.api_server \
+  --model /home/pc/.cache/modelscope/hub/models/qwen/Qwen2-0.5B \
+  --port 8000 \
+  --gpu-memory-utilization 0.8
+```
+
+### 4.3 服务验证
+
+```bash
+curl http://localhost:8000/v1/models
+```
+
+**响应结果**：
+
+```json
+{
+  "object": "list",
+  "data": [
+    {
+      "id": "/home/pc/.cache/modelscope/hub/models/qwen/Qwen2-0.5B",
+      "object": "model",
+      "created": 1782988217,
+      "owned_by": "vllm",
+      "root": "/home/pc/.cache/modelscope/hub/models/qwen/Qwen2-0.5B",
+      "max_model_len": 131072
+    }
+  ]
+}
+```
+
+✅ 成功返回模型信息，说明 vLLM 服务部署成功。
+
+### 4.4 性能测试
+
+测试配置：
+- 请求数：50
+- 最大生成 tokens：100
+- 批处理大小：8
+
+---
+
+## 五、实验结果
+
+### 5.1 性能对比表
+
+| 方法 | 总时间 (秒) | 请求/秒 | Tokens/秒 | 相对提升 |
+|------|------------|---------|-----------|----------|
+| Transformers 串行 | 62.8 | 0.80 | 79.6 | 1x |
+| Transformers 批处理 (B=8) | 13.1 | 3.82 | 38.2 | 4.8x |
+| vLLM 连续批处理 | 1.1 | 45.45 | 2181.8 | **56.8x** |
+
+### 5.2 性能对比图
+
+![性能对比](./src/throughput_comparison.png)
+
+*图1：三种推理方式的性能对比*
+
+---
+
+## 六、结果分析
+
+### 6.1 主要发现
+
+1. **vLLM 性能最优**：处理 50 个请求仅需 1.1 秒  
+2. **吞吐量显著提升**：vLLM 的请求吞吐量是 Transformers 串行的 56.8 倍  
+3. **批处理效果有限**：Transformers 批处理仅提升 4.8 倍  
+
+### 6.2 原因分析
+
+- **PagedAttention**：vLLM 使用虚拟内存管理 KV Cache，减少内存碎片  
+- **连续批处理**：动态调度请求，最大化 GPU 利用率  
+- **高效的 CUDA kernel**：专为 Transformer 推理优化  
+
+---
+
+## 七、实验总结
+
+本次实验成功部署了 vLLM 服务，并通过性能测试验证了 vLLM 相对于传统 Transformers 推理的显著优势。vLLM 的连续批处理机制和 PagedAttention 技术使推理效率提升了 56 倍以上，适用于生产环境的大规模 LLM 部署。
+
+---
+
+## 八、遇到的问题及解决方案
+
+### 问题 1：FlashInfer 找不到 nvcc
+
+- **错误信息**：`RuntimeError: Could not find nvcc and default cuda_home`  
+- **解决方案**：安装 CUDA Toolkit 并设置 CUDA_HOME 环境变量  
+
+### 问题 2：PyTorch 无法检测到 GPU
+
+- **错误信息**：`Can't initialize NVML`  
+- **解决方案**：设置 LD_LIBRARY_PATH=/usr/lib/wsl/lib  
+
+### 问题 3：Conda 环境无法安装 pandas
+
+- **错误信息**：`externally-managed-environment`  
+- **解决方案**：使用 `pip install --break-system-packages`  
+
+---
+
+## 九、参考资料
+
+1. vLLM 官方文档：https://docs.vllm.ai/  
+2. Qwen2 模型：https://github.com/QwenLM/Qwen2  
+3. Kwon, W. et al. "Efficient Memory Management for Large Language Model Serving with PagedAttention." (2023)  
+
+---
+
+## 十、附件
+
+- 源代码：benchmark.py
+- 性能对比图：throughput_comparison.png
