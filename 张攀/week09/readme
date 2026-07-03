@@ -1,0 +1,2 @@
+wsl2 + Docker + AMD-RX6650显卡 对ROCm的支持不好，库依赖冲突无法解决！！！
+尝试使用RoBERTa + Biencoder 进行文本匹配训练，感受效果
