@@ -1,0 +1,59 @@
+============================================
+  启动 vLLM OpenAI Server
+  模型路径: Qwen/Qwen2-0.5B-Instruct
+  对外名称: qwen2-0.5b
+  端口:     8000
+  max_len:  1024
+  显存占用: 0.75
+============================================
+
+启动后用以下命令测试：
+  curl http://localhost:8000/v1/models
+
+INFO 07-02 23:43:03 [__init__.py:244] Automatically detected platform cuda.
+INFO 07-02 23:43:10 [api_server.py:1395] vLLM API server version 0.9.2
+INFO 07-02 23:43:10 [cli_args.py:325] non-default args: {'host': '0.0.0.0', 'model': 'Qwen/Qwen2-0.5B-Instruct', 'dtype': 'float16', 'max_model_len': 1024, 'enforce_eager': True, 'served_model_name': ['qwen2-0.5b'], 'gpu_memory_utilization': 0.75}
+INFO 07-02 23:43:27 [config.py:841] This model supports multiple tasks: {'reward', 'classify', 'embed', 'generate'}. Defaulting to 'generate'.
+WARNING 07-02 23:43:27 [config.py:3371] Casting torch.bfloat16 to torch.float16.
+INFO 07-02 23:43:27 [config.py:1472] Using max model len 1024
+INFO 07-02 23:43:28 [config.py:2285] Chunked prefill is enabled with max_num_batched_tokens=2048.
+WARNING 07-02 23:43:28 [cuda.py:102] To see benefits of async output processing, enable CUDA graph. Since, enforce-eager is enabled, async output processor cannot be used
+WARNING 07-02 23:43:28 [config.py:1633] Possibly too large swap space. 4.00 GiB out of the 7.46 GiB total CPU memory is allocated for the swap space.
+INFO 07-02 23:43:38 [__init__.py:244] Automatically detected platform cuda.
+INFO 07-02 23:43:43 [core.py:526] Waiting for init message from front-end.
+INFO 07-02 23:43:43 [core.py:69] Initializing a V1 LLM engine (v0.9.2) with config: model='Qwen/Qwen2-0.5B-Instruct', speculative_config=None, tokenizer='Qwen/Qwen2-0.5B-Instruct', skip_tokenizer_init=False, tokenizer_mode=auto, revision=None, override_neuron_config={}, tokenizer_revision=None, trust_remote_code=False, dtype=torch.float16, max_seq_len=1024, download_dir=None, load_format=auto, tensor_parallel_size=1, pipeline_parallel_size=1, disable_custom_all_reduce=False, quantization=None, enforce_eager=True, kv_cache_dtype=auto,  device_config=cuda, decoding_config=DecodingConfig(backend='auto', disable_fallback=False, disable_any_whitespace=False, disable_additional_properties=False, reasoning_backend=''), observability_config=ObservabilityConfig(show_hidden_metrics_for_version=None, otlp_traces_endpoint=None, collect_detailed_traces=None), seed=0, served_model_name=qwen2-0.5b, num_scheduler_steps=1, multi_step_stream_outputs=True, enable_prefix_caching=True, chunked_prefill_enabled=True, use_async_output_proc=False, pooler_config=None, compilation_config={"level":0,"debug_dump_path":"","cache_dir":"","backend":"","custom_ops":[],"splitting_ops":[],"use_inductor":true,"compile_sizes":[],"inductor_compile_config":{"enable_auto_functionalized_v2":false},"inductor_passes":{},"use_cudagraph":true,"cudagraph_num_of_warmups":0,"cudagraph_capture_sizes":[],"cudagraph_copy_inputs":false,"full_cuda_graph":false,"max_capture_size":0,"local_cache_dir":null}
+INFO 07-02 23:43:57 [parallel_state.py:1076] rank 0 in world size 1 is assigned as DP rank 0, PP rank 0, TP rank 0, EP rank 0
+WARNING 07-02 23:43:57 [interface.py:382] Using 'pin_memory=False' as WSL is detected. This may slow down the performance.
+WARNING 07-02 23:43:57 [topk_topp_sampler.py:59] FlashInfer is not available. Falling back to the PyTorch-native implementation of top-p & top-k sampling. For the best performance, please install FlashInfer.
+INFO 07-02 23:43:57 [gpu_model_runner.py:1770] Starting to load model Qwen/Qwen2-0.5B-Instruct...
+INFO 07-02 23:43:57 [gpu_model_runner.py:1775] Loading model from scratch...
+INFO 07-02 23:43:58 [cuda.py:284] Using Flash Attention backend on V1 engine.
+INFO 07-02 23:43:59 [weight_utils.py:292] Using model weights format ['*.safetensors']
+INFO 07-02 23:44:43 [weight_utils.py:308] Time spent downloading weights for Qwen/Qwen2-0.5B-Instruct: 43.574010 seconds
+INFO 07-02 23:44:43 [weight_utils.py:345] No model.safetensors.index.json found in remote.
+INFO 07-02 23:44:44 [default_loader.py:272] Loading weights took 1.19 seconds
+INFO 07-02 23:44:45 [gpu_model_runner.py:1801] Model loading took 0.9267 GiB and 46.747125 seconds
+INFO 07-02 23:44:47 [gpu_worker.py:232] Available KV cache memory: 0.66 GiB
+INFO 07-02 23:44:48 [kv_cache_utils.py:716] GPU KV cache size: 57,280 tokens
+INFO 07-02 23:44:48 [kv_cache_utils.py:720] Maximum concurrency for 1,024 tokens per request: 55.94x
+INFO 07-02 23:44:48 [core.py:172] init engine (profile, create kv cache, warmup model) took 2.76 seconds
+WARNING 07-02 23:44:49 [config.py:1633] Possibly too large swap space. 4.00 GiB out of the 7.46 GiB total CPU memory is allocated for the swap space.
+INFO 07-02 23:44:49 [loggers.py:137] Engine 000: vllm cache_config_info with initialization after num_gpu_blocks is: 3580
+WARNING 07-02 23:44:50 [config.py:1392] Default sampling parameters have been overridden by the model's Hugging Face generation config recommended from the model creator. If this is not intended, please relaunch vLLM instance with `--generation-config vllm`.
+INFO 07-02 23:44:50 [serving_chat.py:125] Using default chat sampling params from model: {'repetition_penalty': 1.1, 'temperature': 0.7, 'top_k': 20, 'top_p': 0.8}
+INFO 07-02 23:44:50 [serving_completion.py:72] Using default completion sampling params from model: {'repetition_penalty': 1.1, 'temperature': 0.7, 'top_k': 20, 'top_p': 0.8}
+INFO 07-02 23:44:50 [api_server.py:1457] Starting vLLM API server 0 on http://0.0.0.0:8000
+INFO 07-02 23:44:50 [launcher.py:29] Available routes are:
+INFO 07-02 23:44:50 [launcher.py:37] Route: /openapi.json, Methods: HEAD, GET
+INFO 07-02 23:44:50 [launcher.py:37] Route: /docs, Methods: HEAD, GET
+INFO 07-02 23:44:50 [launcher.py:37] Route: /docs/oauth2-redirect, Methods: HEAD, GET
+INFO 07-02 23:44:50 [launcher.py:37] Route: /redoc, Methods: HEAD, GET
+INFO 07-02 23:44:50 [launcher.py:37] Route: /metrics, Methods: GET
+INFO:     127.0.0.1:59222 - "GET /v1/models HTTP/1.1" 200 OK
+INFO 07-02 23:48:14 [chat_utils.py:444] Detected the chat template content format to be 'string'. You can set `--chat-template-content-format` to override this.
+INFO 07-02 23:48:14 [logger.py:43] Received request chatcmpl-28ab79ee15a7401a9620bae029bbd51f: prompt: '<|im_start|>system\nYou are a helpful assistant.<|im_end|>\n<|im_start|>user\nSay one sentence about vLLM.<|im_end|>\n<|im_start|>assistant\n', params: SamplingParams(n=1, presence_penalty=0.0, frequency_penalty=0.0, repetition_penalty=1.1, temperature=0.7, top_p=0.8, top_k=20, min_p=0.0, seed=None, stop=[], stop_token_ids=[], bad_words=[], include_stop_str_in_output=False, ignore_eos=False, max_tokens=32, min_tokens=0, logprobs=None, prompt_logprobs=None, skip_special_tokens=True, spaces_between_special_tokens=True, truncate_prompt_tokens=None, guided_decoding=None, extra_args=None), prompt_token_ids: None, prompt_embeds shape: None, lora_request: None, prompt_adapter_request: None.
+INFO 07-02 23:48:14 [async_llm.py:270] Added request chatcmpl-28ab79ee15a7401a9620bae029bbd51f.
+INFO 07-02 23:48:15 [loggers.py:118] Engine 000: Avg prompt throughput: 2.7 tokens/s, Avg generation throughput: 1.6 tokens/s, Running: 1 reqs, Waiting: 0 reqs, GPU KV cache usage: 0.1%, Prefix cache hit rate: 0.0%
+INFO:     127.0.0.1:47806 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+INFO 07-02 23:48:25 [loggers.py:118] Engine 000: Avg prompt throughput: 0.0 tokens/s, Avg generation throughput: 1.6 tokens/s, Running: 0 reqs, Waiting: 0 reqs, GPU KV cache usage: 0.0%, Prefix cache hit rate: 0.0%
+INFO 07-02 23:48:27 [launcher.py:80] Shutting down FastAPI HTTP server.
