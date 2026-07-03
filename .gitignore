@@ -12,3 +12,6 @@ model.bin
 *.pt
 *.pyc
 __pycache__/
+.conda/
+.DS_Store
+outputs/
