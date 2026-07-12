@@ -1,0 +1,457 @@
+{
+  "实验说明": "实验B：添加刁难测试用例，观察裸 prompt / response_format / guided_json 的差异",
+  "刁难用例索引": [
+    9,
+    10,
+    11,
+    12
+  ],
+  "刁难用例列表": [
+    "2020年贵州茅台的毛利率是百分之二十三点五",
+    "帮我查一下22年招行的财务数据",
+    "2024年宁!德!时!代!的净利润是多少",
+    "毛利率百分之二十三点五"
+  ],
+  "测试总数": 13,
+  "汇总统计": {
+    "raw": {
+      "json": 13,
+      "fields": 13,
+      "year": 13,
+      "enum": 10,
+      "valid": 9
+    },
+    "response_format": {
+      "json": 13,
+      "fields": 13,
+      "year": 13,
+      "enum": 10,
+      "valid": 9
+    },
+    "guided_json": {
+      "json": 13,
+      "fields": 13,
+      "year": 13,
+      "enum": 13,
+      "valid": 13
+    }
+  },
+  "详细结果": [
+    {
+      "prompt": "招行 2023 年营收多少",
+      "modes": {
+        "raw": {
+          "output": "{\"company\": \"招行\", \"year\": 2023, \"metric\": \"营收\"}",
+          "latency": 2.376,
+          "is_json": true,
+          "has_all_fields": true,
+          "year_in_range": true,
+          "metric_in_enum": true,
+          "schema_valid": true
+        },
+        "response_format": {
+          "output": "{\"company\": \"招行\", \"year\": 2023, \"metric\": \"营收\"}",
+          "latency": 2.514,
+          "is_json": true,
+          "has_all_fields": true,
+          "year_in_range": true,
+          "metric_in_enum": true,
+          "schema_valid": true
+        },
+        "guided_json": {
+          "output": "{\"company\": \"招行\", \"year\": 2023, \"metric\": \"营收\"}",
+          "latency": 0.455,
+          "is_json": true,
+          "has_all_fields": true,
+          "year_in_range": true,
+          "metric_in_enum": true,
+          "schema_valid": true
+        }
+      }
+    },
+    {
+      "prompt": "贵州茅台 2022 的净利润",
+      "modes": {
+        "raw": {
+          "output": "{\"company\": \"贵州茅台\", \"year\": 2022, \"metric\": \"净利润\"}",
+          "latency": 0.3,
+          "is_json": true,
+          "has_all_fields": true,
+          "year_in_range": true,
+          "metric_in_enum": true,
+          "schema_valid": true
+        },
+        "response_format": {
+          "output": "{\"company\": \"贵州茅台\", \"year\": 2022, \"metric\": \"净利润\"}",
+          "latency": 0.327,
+          "is_json": true,
+          "has_all_fields": true,
+          "year_in_range": true,
+          "metric_in_enum": true,
+          "schema_valid": true
+        },
+        "guided_json": {
+          "output": "{\"company\": \"贵州茅台\", \"year\": 2022, \"metric\": \"净利润\"}",
+          "latency": 0.349,
+          "is_json": true,
+          "has_all_fields": true,
+          "year_in_range": true,
+          "metric_in_enum": true,
+          "schema_valid": true
+        }
+      }
+    },
+    {
+      "prompt": "平安银行去年（2024）的 ROE",
+      "modes": {
+        "raw": {
+          "output": "{\"company\": \"平安银行\", \"year\": 2024, \"metric\": \"ROE\"}",
+          "latency": 0.336,
+          "is_json": true,
+          "has_all_fields": true,
+          "year_in_range": true,
+          "metric_in_enum": true,
+          "schema_valid": true
+        },
+        "response_format": {
+          "output": "{\"company\": \"平安银行\", \"year\": 2024, \"metric\": \"ROE\"}",
+          "latency": 0.359,
+          "is_json": true,
+          "has_all_fields": true,
+          "year_in_range": true,
+          "metric_in_enum": true,
+          "schema_valid": true
+        },
+        "guided_json": {
+          "output": "{\"company\": \"平安银行\", \"year\": 2024, \"metric\": \"ROE\"}",
+          "latency": 0.342,
+          "is_json": true,
+          "has_all_fields": true,
+          "year_in_range": true,
+          "metric_in_enum": true,
+          "schema_valid": true
+        }
+      }
+    },
+    {
+      "prompt": "2021 年五粮液毛利率",
+      "modes": {
+        "raw": {
+          "output": "{\"company\": \"五粮液\", \"year\": 2021, \"metric\": \"毛利率\"}",
+          "latency": 0.327,
+          "is_json": true,
+          "has_all_fields": true,
+          "year_in_range": true,
+          "metric_in_enum": true,
+          "schema_valid": true
+        },
+        "response_format": {
+          "output": "{\"company\": \"五粮液\", \"year\": 2021, \"metric\": \"毛利率\"}",
+          "latency": 0.328,
+          "is_json": true,
+          "has_all_fields": true,
+          "year_in_range": true,
+          "metric_in_enum": true,
+          "schema_valid": true
+        },
+        "guided_json": {
+          "output": "{\"company\": \"五粮液\", \"year\": 2021, \"metric\": \"毛利率\"}",
+          "latency": 0.322,
+          "is_json": true,
+          "has_all_fields": true,
+          "year_in_range": true,
+          "metric_in_enum": true,
+          "schema_valid": true
+        }
+      }
+    },
+    {
+      "prompt": "2023 宁德时代经营现金流",
+      "modes": {
+        "raw": {
+          "output": "{\"company\": \"宁德时代\", \"year\": 2023, \"metric\": \"经营现金流\"}",
+          "latency": 0.314,
+          "is_json": true,
+          "has_all_fields": true,
+          "year_in_range": true,
+          "metric_in_enum": true,
+          "schema_valid": true
+        },
+        "response_format": {
+          "output": "{\"company\": \"宁德时代\", \"year\": 2023, \"metric\": \"经营现金流\"}",
+          "latency": 0.401,
+          "is_json": true,
+          "has_all_fields": true,
+          "year_in_range": true,
+          "metric_in_enum": true,
+          "schema_valid": true
+        },
+        "guided_json": {
+          "output": "{\"company\": \"宁德时代\", \"year\": 2023, \"metric\": \"经营现金流\"}",
+          "latency": 0.325,
+          "is_json": true,
+          "has_all_fields": true,
+          "year_in_range": true,
+          "metric_in_enum": true,
+          "schema_valid": true
+        }
+      }
+    },
+    {
+      "prompt": "问一下比亚迪 2024 的总资产规模",
+      "modes": {
+        "raw": {
+          "output": "{\"company\": \"比亚迪股份有限公司\", \"year\": 2024, \"metric\": \"总资产\"}",
+          "latency": 0.295,
+          "is_json": true,
+          "has_all_fields": true,
+          "year_in_range": true,
+          "metric_in_enum": true,
+          "schema_valid": true
+        },
+        "response_format": {
+          "output": "{\"company\": \"比亚迪股份有限公司\", \"year\": 2024, \"metric\": \"总资产\"}",
+          "latency": 0.29,
+          "is_json": true,
+          "has_all_fields": true,
+          "year_in_range": true,
+          "metric_in_enum": true,
+          "schema_valid": true
+        },
+        "guided_json": {
+          "output": "{\"company\": \"比亚迪股份有限公司\", \"year\": 2024, \"metric\": \"总资产\"}",
+          "latency": 0.37,
+          "is_json": true,
+          "has_all_fields": true,
+          "year_in_range": true,
+          "metric_in_enum": true,
+          "schema_valid": true
+        }
+      }
+    },
+    {
+      "prompt": "茅台 2020 年利润情况",
+      "modes": {
+        "raw": {
+          "output": "{\"company\": \"茅台酒股份有限公司\", \"year\": 2020, \"metric\": \"净利润\"}",
+          "latency": 0.317,
+          "is_json": true,
+          "has_all_fields": true,
+          "year_in_range": true,
+          "metric_in_enum": true,
+          "schema_valid": true
+        },
+        "response_format": {
+          "output": "{\"company\": \"茅台酒股份有限公司\", \"year\": 2020, \"metric\": \"净利润\"}",
+          "latency": 0.314,
+          "is_json": true,
+          "has_all_fields": true,
+          "year_in_range": true,
+          "metric_in_enum": true,
+          "schema_valid": true
+        },
+        "guided_json": {
+          "output": "{\"company\": \"茅台酒股份有限公司\", \"year\": 2020, \"metric\": \"净利润\"}",
+          "latency": 0.305,
+          "is_json": true,
+          "has_all_fields": true,
+          "year_in_range": true,
+          "metric_in_enum": true,
+          "schema_valid": true
+        }
+      }
+    },
+    {
+      "prompt": "ICBC 2023 营收",
+      "modes": {
+        "raw": {
+          "output": "{\"company\": \"ICBC\", \"year\": 2023, \"metric\": \"营业收入\"}",
+          "latency": 0.309,
+          "is_json": true,
+          "has_all_fields": true,
+          "year_in_range": true,
+          "metric_in_enum": false,
+          "schema_valid": false
+        },
+        "response_format": {
+          "output": "{\"company\": \"ICBC\", \"year\": 2023, \"metric\": \"营业收入\"}",
+          "latency": 0.294,
+          "is_json": true,
+          "has_all_fields": true,
+          "year_in_range": true,
+          "metric_in_enum": false,
+          "schema_valid": false
+        },
+        "guided_json": {
+          "output": "{\"company\": \"ICBC\", \"year\": 2023, \"metric\": \"营收\"}",
+          "latency": 0.29,
+          "is_json": true,
+          "has_all_fields": true,
+          "year_in_range": true,
+          "metric_in_enum": true,
+          "schema_valid": true
+        }
+      }
+    },
+    {
+      "prompt": "隆基绿能 22 年 roe",
+      "modes": {
+        "raw": {
+          "output": "{\"company\": \"隆基绿能\", \"year\": 2022, \"metric\": \"ROE\"}",
+          "latency": 0.342,
+          "is_json": true,
+          "has_all_fields": true,
+          "year_in_range": true,
+          "metric_in_enum": true,
+          "schema_valid": true
+        },
+        "response_format": {
+          "output": "{\"company\": \"隆基绿能\", \"year\": 2022, \"metric\": \"ROE\"}",
+          "latency": 0.316,
+          "is_json": true,
+          "has_all_fields": true,
+          "year_in_range": true,
+          "metric_in_enum": true,
+          "schema_valid": true
+        },
+        "guided_json": {
+          "output": "{\"company\": \"隆基绿能\", \"year\": 2022, \"metric\": \"ROE\"}",
+          "latency": 0.314,
+          "is_json": true,
+          "has_all_fields": true,
+          "year_in_range": true,
+          "metric_in_enum": true,
+          "schema_valid": true
+        }
+      }
+    },
+    {
+      "prompt": "2020年贵州茅台的毛利率是百分之二十三点五",
+      "modes": {
+        "raw": {
+          "output": "{\"company\": \"贵州茅台\", \"year\": 2020, \"metric\": \"毛利率\", \"value\": \"23.5%\"}",
+          "latency": 0.435,
+          "is_json": true,
+          "has_all_fields": true,
+          "year_in_range": true,
+          "metric_in_enum": true,
+          "schema_valid": false
+        },
+        "response_format": {
+          "output": "{\"company\": \"贵州茅台\", \"year\": 2020, \"metric\": \"毛利率\", \"value\": \"23.5%\"}",
+          "latency": 0.425,
+          "is_json": true,
+          "has_all_fields": true,
+          "year_in_range": true,
+          "metric_in_enum": true,
+          "schema_valid": false
+        },
+        "guided_json": {
+          "output": "{\"company\": \"贵州茅台\", \"year\": 2020, \"metric\": \"毛利率\"}",
+          "latency": 0.29,
+          "is_json": true,
+          "has_all_fields": true,
+          "year_in_range": true,
+          "metric_in_enum": true,
+          "schema_valid": true
+        }
+      }
+    },
+    {
+      "prompt": "帮我查一下22年招行的财务数据",
+      "modes": {
+        "raw": {
+          "output": "{\"company\": \"招商银行\", \"year\": 2022, \"metric\": \"营业收入\"}",
+          "latency": 0.28,
+          "is_json": true,
+          "has_all_fields": true,
+          "year_in_range": true,
+          "metric_in_enum": false,
+          "schema_valid": false
+        },
+        "response_format": {
+          "output": "{\"company\": \"招商银行\", \"year\": 2022, \"metric\": \"营业收入\"}",
+          "latency": 0.275,
+          "is_json": true,
+          "has_all_fields": true,
+          "year_in_range": true,
+          "metric_in_enum": false,
+          "schema_valid": false
+        },
+        "guided_json": {
+          "output": "{\"company\": \"招商银行\", \"year\": 2022, \"metric\": \"营收\"}",
+          "latency": 0.27,
+          "is_json": true,
+          "has_all_fields": true,
+          "year_in_range": true,
+          "metric_in_enum": true,
+          "schema_valid": true
+        }
+      }
+    },
+    {
+      "prompt": "2024年宁!德!时!代!的净利润是多少",
+      "modes": {
+        "raw": {
+          "output": "{\"company\": \"宁德时代\", \"year\": 2024, \"metric\": \"净利润\"}",
+          "latency": 0.287,
+          "is_json": true,
+          "has_all_fields": true,
+          "year_in_range": true,
+          "metric_in_enum": true,
+          "schema_valid": true
+        },
+        "response_format": {
+          "output": "{\"company\": \"宁德时代\", \"year\": 2024, \"metric\": \"净利润\"}",
+          "latency": 0.282,
+          "is_json": true,
+          "has_all_fields": true,
+          "year_in_range": true,
+          "metric_in_enum": true,
+          "schema_valid": true
+        },
+        "guided_json": {
+          "output": "{\"company\": \"宁德时代\", \"year\": 2024, \"metric\": \"净利润\"}",
+          "latency": 0.294,
+          "is_json": true,
+          "has_all_fields": true,
+          "year_in_range": true,
+          "metric_in_enum": true,
+          "schema_valid": true
+        }
+      }
+    },
+    {
+      "prompt": "毛利率百分之二十三点五",
+      "modes": {
+        "raw": {
+          "output": "{\"company\": \"阿里巴巴集团\", \"year\": 2022, \"metric\": \"%毛利率\"}",
+          "latency": 0.273,
+          "is_json": true,
+          "has_all_fields": true,
+          "year_in_range": true,
+          "metric_in_enum": false,
+          "schema_valid": false
+        },
+        "response_format": {
+          "output": "{\"company\": \"阿里巴巴集团\", \"year\": 2022, \"metric\": \"%毛利率\"}",
+          "latency": 0.297,
+          "is_json": true,
+          "has_all_fields": true,
+          "year_in_range": true,
+          "metric_in_enum": false,
+          "schema_valid": false
+        },
+        "guided_json": {
+          "output": "{\"company\": \"阿里巴巴集团\", \"year\": 2022, \"metric\": \"毛利率\"}",
+          "latency": 0.334,
+          "is_json": true,
+          "has_all_fields": true,
+          "year_in_range": true,
+          "metric_in_enum": true,
+          "schema_valid": true
+        }
+      }
+    }
+  ]
+}
